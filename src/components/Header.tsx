@@ -27,6 +27,9 @@ export const Header = ({ user }: HeaderProps) => {
         </Link>
 
         <nav className="flex items-center gap-4">
+          <Link to="/changelog">
+            <Button variant="ghost" size="sm">What's New</Button>
+          </Link>
           {user ? (
             <>
               <Link to="/generate">
