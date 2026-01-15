@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Generate from "./pages/Generate";
+import Chat from "./pages/Chat";
 import Changelog from "./pages/Changelog";
 import NotFound from "./pages/NotFound";
 import { WhatsNewModal } from "./components/WhatsNewModal";
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/generate" element={<Generate />} />
+          <Route path="/chat" element={<Chat />} />
           <Route path="/changelog" element={<Changelog />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

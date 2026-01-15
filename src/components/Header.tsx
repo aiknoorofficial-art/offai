@@ -32,6 +32,9 @@ export const Header = ({ user }: HeaderProps) => {
           </Link>
           {user ? (
             <>
+              <Link to="/chat">
+                <Button variant="ghost" size="sm">Chat</Button>
+              </Link>
               <Link to="/generate">
                 <Button variant="ghost" size="sm">Generate</Button>
               </Link>
