@@ -4,6 +4,8 @@
 
 /* OFF AI - Yellow & Black Hacker Theme */
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap");
 
 @layer base {
   :root {
@@ -18,7 +20,7 @@
     --popover-foreground: 50 100% 50%;
 
     --primary: 50 100% 50%;
-    --primary-foreground: 0 0% 4%;
+    --primary-foreground: 224 71.4286% 4.1176%;
 
     --secondary: 0 0% 12%;
     --secondary-foreground: 50 100% 50%;
@@ -41,7 +43,7 @@
     /* Custom tokens */
     --glow-color: 50 100% 50%;
     --terminal-green: 120 100% 40%;
-    
+
     --sidebar-background: 0 0% 6%;
     --sidebar-foreground: 50 100% 50%;
     --sidebar-primary: 50 100% 50%;
