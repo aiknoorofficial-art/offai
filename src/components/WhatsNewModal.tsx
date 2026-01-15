@@ -6,12 +6,29 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Zap, Code, Shield } from "lucide-react";
+import { Sparkles, Zap, Code, Shield, MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 
 // Update this version and changelog when releasing updates
-const CURRENT_VERSION = "1.0.0";
+const CURRENT_VERSION = "1.1.0";
 const CHANGELOG = [
+  {
+    version: "1.1.0",
+    date: "January 2026",
+    title: "💬 AI Chat Launched",
+    features: [
+      {
+        icon: MessageCircle,
+        title: "AI Chat Assistant",
+        description: "Get instant answers to your questions with our new AI chat",
+      },
+      {
+        icon: Sparkles,
+        title: "Real-time Responses",
+        description: "Watch AI responses stream in real-time as you chat",
+      },
+    ],
+  },
   {
     version: "1.0.0",
     date: "January 2026",
