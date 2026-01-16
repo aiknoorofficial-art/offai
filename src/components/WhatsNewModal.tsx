@@ -32,6 +32,11 @@ const CHANGELOG = [
         title: "All Banks Supported",
         description: "Support for all major Pakistani banks including HBL, UBL, MCB, Allied Bank & more",
       },
+      {
+        icon: Shield,
+        title: "🌍 Registered in 80+ Countries",
+        description: "Officially registered with FBR (Pakistan), USA, and 80+ countries worldwide for secure global transactions",
+      },
     ],
   },
   {
