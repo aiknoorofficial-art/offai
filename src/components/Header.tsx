@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { LogOut, Zap } from "lucide-react";
+import { TransactionModal } from "./TransactionModal";
 
 interface HeaderProps {
   user: User | null;
@@ -27,6 +28,7 @@ export const Header = ({ user }: HeaderProps) => {
         </Link>
 
         <nav className="flex items-center gap-4">
+          <TransactionModal />
           <Link to="/changelog">
             <Button variant="ghost" size="sm">What's New</Button>
           </Link>
