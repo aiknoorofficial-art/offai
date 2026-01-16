@@ -18,9 +18,12 @@ import {
   Building2, 
   CreditCard,
   Clock,
-  PiggyBank
+  PiggyBank,
+  Copy,
+  Check
 } from "lucide-react";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const PAYMENT_METHODS = [
   {
@@ -96,9 +99,21 @@ const PAYMENT_METHODS = [
 ];
 
 export const TransactionModal = () => {
-  const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
+  const [selectedMethod, setSelectedMethod] = useState<string | null>("easypaisa");
   const [amount, setAmount] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
+  const [copied, setCopied] = useState(false);
+  const { toast } = useToast();
+
+  const handleCopyAccount = () => {
+    navigator.clipboard.writeText("03343558055");
+    setCopied(true);
+    toast({
+      title: "Copied!",
+      description: "Account number copied to clipboard",
+    });
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <Dialog>
@@ -124,8 +139,12 @@ export const TransactionModal = () => {
           </p>
         </DialogHeader>
 
-        <Tabs defaultValue="send" className="mt-4">
+        <Tabs defaultValue="deposit" className="mt-4">
           <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="deposit" className="gap-1 text-xs sm:text-sm">
+              <PiggyBank className="w-3 h-3 sm:w-4 sm:h-4" />
+              Deposit
+            </TabsTrigger>
             <TabsTrigger value="send" className="gap-1 text-xs sm:text-sm">
               <Send className="w-3 h-3 sm:w-4 sm:h-4" />
               Send
@@ -134,11 +153,84 @@ export const TransactionModal = () => {
               <ArrowDownLeft className="w-3 h-3 sm:w-4 sm:h-4" />
               Receive
             </TabsTrigger>
-            <TabsTrigger value="deposit" className="gap-1 text-xs sm:text-sm">
-              <PiggyBank className="w-3 h-3 sm:w-4 sm:h-4" />
-              Deposit
-            </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="deposit" className="space-y-4 mt-4">
+            {/* Featured Easypaisa Account */}
+            <div className="p-4 rounded-lg bg-green-500/20 border-2 border-green-500 relative overflow-hidden">
+              <div className="absolute top-0 right-0 bg-green-500 text-white text-xs px-2 py-1 rounded-bl-lg font-medium">
+                RECOMMENDED
+              </div>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 rounded-lg bg-green-500 flex items-center justify-center">
+                  <Smartphone className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg text-foreground">Easypaisa</h3>
+                  <p className="text-sm text-muted-foreground">Fastest way to deposit</p>
+                </div>
+              </div>
+              
+              <div className="space-y-3 bg-background/50 rounded-lg p-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Account Name:</span>
+                  <span className="font-semibold text-foreground">Fazal ur Rehman</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Account Number:</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono font-bold text-primary text-lg">03343558055</span>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={handleCopyAccount}
+                      className="h-8 w-8 p-0"
+                    >
+                      {copied ? (
+                        <Check className="w-4 h-4 text-green-500" />
+                      ) : (
+                        <Copy className="w-4 h-4" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-xs text-muted-foreground mt-3 text-center">
+                Send payment to this account and your wallet will be credited instantly
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Or deposit from other methods</Label>
+              <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto p-1">
+                {PAYMENT_METHODS.filter(m => m.id !== "easypaisa").map((method) => (
+                  <button
+                    key={method.id}
+                    onClick={() => setSelectedMethod(method.id)}
+                    className={`flex items-center gap-2 p-2 rounded-lg border transition-all text-left ${
+                      selectedMethod === method.id
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:border-primary/50 hover:bg-secondary/50"
+                    }`}
+                  >
+                    <div className={`w-6 h-6 rounded-md ${method.color} flex items-center justify-center`}>
+                      <method.icon className="w-3 h-3 text-white" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-xs text-foreground">{method.name}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="p-3 rounded-lg bg-primary/10 border border-primary/30">
+              <p className="text-xs text-center text-muted-foreground">
+                💡 After sending payment, your balance will be updated automatically
+              </p>
+            </div>
+          </TabsContent>
 
           <TabsContent value="send" className="space-y-4 mt-4">
             <div className="space-y-2">
@@ -234,60 +326,6 @@ export const TransactionModal = () => {
             <Button variant="glow" className="w-full" disabled>
               <ArrowDownLeft className="w-4 h-4 mr-2" />
               Generate QR Code (Coming Soon)
-            </Button>
-          </TabsContent>
-
-          <TabsContent value="deposit" className="space-y-4 mt-4">
-            <div className="space-y-2">
-              <Label>Deposit From</Label>
-              <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-1">
-                {PAYMENT_METHODS.map((method) => (
-                  <button
-                    key={method.id}
-                    onClick={() => setSelectedMethod(method.id)}
-                    className={`flex items-center gap-2 p-3 rounded-lg border transition-all text-left ${
-                      selectedMethod === method.id
-                        ? "border-primary bg-primary/10"
-                        : "border-border hover:border-primary/50 hover:bg-secondary/50"
-                    }`}
-                  >
-                    <div className={`w-8 h-8 rounded-md ${method.color} flex items-center justify-center`}>
-                      <method.icon className="w-4 h-4 text-white" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-sm text-foreground">{method.name}</p>
-                      <p className="text-xs text-muted-foreground">{method.description}</p>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="deposit-amount">Deposit Amount (PKR)</Label>
-              <Input
-                id="deposit-amount"
-                type="number"
-                placeholder="Enter amount to deposit"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                disabled
-              />
-            </div>
-
-            <div className="p-4 rounded-lg bg-primary/10 border border-primary/30">
-              <div className="flex items-center gap-2 mb-2">
-                <PiggyBank className="w-5 h-5 text-primary" />
-                <span className="font-medium text-foreground">Deposit to Wallet</span>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Add funds to your OFF AI wallet using any of your linked bank accounts or mobile wallets.
-              </p>
-            </div>
-
-            <Button variant="glow" className="w-full" disabled>
-              <PiggyBank className="w-4 h-4 mr-2" />
-              Deposit Funds (Coming Soon)
             </Button>
           </TabsContent>
         </Tabs>
