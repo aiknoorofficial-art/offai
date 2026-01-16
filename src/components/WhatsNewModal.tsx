@@ -6,12 +6,34 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Zap, Code, Shield, MessageCircle } from "lucide-react";
+import { Sparkles, Zap, Code, Shield, MessageCircle, Wallet, BanknoteIcon, Rocket } from "lucide-react";
 import { useEffect, useState } from "react";
 
 // Update this version and changelog when releasing updates
-const CURRENT_VERSION = "1.1.0";
+const CURRENT_VERSION = "1.2.0";
 const CHANGELOG = [
+  {
+    version: "1.2.0",
+    date: "January 2026",
+    title: "🚀 HUGE UPDATE COMING SOON!",
+    features: [
+      {
+        icon: Rocket,
+        title: "💰 Pakistan Payments Integration",
+        description: "Send & receive funds easily via Easypaisa, JazzCash, and all Pakistani banks!",
+      },
+      {
+        icon: Wallet,
+        title: "Instant Transfers",
+        description: "Quick and secure money transfers directly through our platform",
+      },
+      {
+        icon: BanknoteIcon,
+        title: "All Banks Supported",
+        description: "Support for all major Pakistani banks including HBL, UBL, MCB, Allied Bank & more",
+      },
+    ],
+  },
   {
     version: "1.1.0",
     date: "January 2026",
