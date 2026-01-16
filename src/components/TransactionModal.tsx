@@ -17,7 +17,8 @@ import {
   Smartphone, 
   Building2, 
   CreditCard,
-  Clock
+  Clock,
+  PiggyBank
 } from "lucide-react";
 import { useState } from "react";
 
@@ -111,7 +112,7 @@ export const TransactionModal = () => {
         <DialogHeader>
           <div className="flex items-center gap-2">
             <DialogTitle className="text-xl text-primary text-glow">
-              Send & Receive Money
+              Send, Receive & Deposit
             </DialogTitle>
             <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/50">
               <Clock className="w-3 h-3 mr-1" />
@@ -124,14 +125,18 @@ export const TransactionModal = () => {
         </DialogHeader>
 
         <Tabs defaultValue="send" className="mt-4">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="send" className="gap-2">
-              <Send className="w-4 h-4" />
-              Send Money
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="send" className="gap-1 text-xs sm:text-sm">
+              <Send className="w-3 h-3 sm:w-4 sm:h-4" />
+              Send
             </TabsTrigger>
-            <TabsTrigger value="receive" className="gap-2">
-              <ArrowDownLeft className="w-4 h-4" />
-              Receive Money
+            <TabsTrigger value="receive" className="gap-1 text-xs sm:text-sm">
+              <ArrowDownLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+              Receive
+            </TabsTrigger>
+            <TabsTrigger value="deposit" className="gap-1 text-xs sm:text-sm">
+              <PiggyBank className="w-3 h-3 sm:w-4 sm:h-4" />
+              Deposit
             </TabsTrigger>
           </TabsList>
 
@@ -229,6 +234,60 @@ export const TransactionModal = () => {
             <Button variant="glow" className="w-full" disabled>
               <ArrowDownLeft className="w-4 h-4 mr-2" />
               Generate QR Code (Coming Soon)
+            </Button>
+          </TabsContent>
+
+          <TabsContent value="deposit" className="space-y-4 mt-4">
+            <div className="space-y-2">
+              <Label>Deposit From</Label>
+              <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-1">
+                {PAYMENT_METHODS.map((method) => (
+                  <button
+                    key={method.id}
+                    onClick={() => setSelectedMethod(method.id)}
+                    className={`flex items-center gap-2 p-3 rounded-lg border transition-all text-left ${
+                      selectedMethod === method.id
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:border-primary/50 hover:bg-secondary/50"
+                    }`}
+                  >
+                    <div className={`w-8 h-8 rounded-md ${method.color} flex items-center justify-center`}>
+                      <method.icon className="w-4 h-4 text-white" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm text-foreground">{method.name}</p>
+                      <p className="text-xs text-muted-foreground">{method.description}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="deposit-amount">Deposit Amount (PKR)</Label>
+              <Input
+                id="deposit-amount"
+                type="number"
+                placeholder="Enter amount to deposit"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                disabled
+              />
+            </div>
+
+            <div className="p-4 rounded-lg bg-primary/10 border border-primary/30">
+              <div className="flex items-center gap-2 mb-2">
+                <PiggyBank className="w-5 h-5 text-primary" />
+                <span className="font-medium text-foreground">Deposit to Wallet</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Add funds to your OFF AI wallet using any of your linked bank accounts or mobile wallets.
+              </p>
+            </div>
+
+            <Button variant="glow" className="w-full" disabled>
+              <PiggyBank className="w-4 h-4 mr-2" />
+              Deposit Funds (Coming Soon)
             </Button>
           </TabsContent>
         </Tabs>
