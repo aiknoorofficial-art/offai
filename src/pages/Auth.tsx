@@ -4,18 +4,21 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Zap, Mail, Lock, ArrowLeft, Loader2 } from "lucide-react";
+import { Zap, Mail, Lock, ArrowLeft, Loader2, User, Hash } from "lucide-react";
 import { z } from "zod";
 
 const emailSchema = z.string().email("Please enter a valid email address");
 const passwordSchema = z.string().min(6, "Password must be at least 6 characters");
+const nameSchema = z.string().min(2, "Name must be at least 2 characters").max(100, "Name must be less than 100 characters");
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(searchParams.get("mode") === "signup");
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -35,6 +38,17 @@ const Auth = () => {
   }, [navigate]);
 
   const validateInputs = () => {
+    if (isSignUp) {
+      try {
+        nameSchema.parse(fullName);
+      } catch (e) {
+        if (e instanceof z.ZodError) {
+          toast.error(e.errors[0].message);
+          return false;
+        }
+      }
+    }
+    
     try {
       emailSchema.parse(email);
     } catch (e) {
@@ -43,6 +57,7 @@ const Auth = () => {
         return false;
       }
     }
+    
     try {
       passwordSchema.parse(password);
     } catch (e) {
@@ -51,6 +66,12 @@ const Auth = () => {
         return false;
       }
     }
+
+    if (isSignUp && password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return false;
+    }
+    
     return true;
   };
 
@@ -63,7 +84,7 @@ const Auth = () => {
     try {
       if (isSignUp) {
         const redirectUrl = `${window.location.origin}/`;
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -71,6 +92,18 @@ const Auth = () => {
           },
         });
         if (error) throw error;
+        
+        // Create profile after signup
+        if (data.user) {
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .insert({
+              user_id: data.user.id,
+              full_name: fullName,
+            });
+          if (profileError) throw profileError;
+        }
+        
         toast.success("Account created! You can now sign in.");
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -91,6 +124,13 @@ const Auth = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Generate a unique user ID preview
+  const generateUserIdPreview = () => {
+    if (!email) return "Your unique ID will appear here";
+    const hash = email.split('@')[0].slice(0, 4).toUpperCase();
+    return `OFF-${hash}-XXXX`;
   };
 
   return (
@@ -123,6 +163,39 @@ const Auth = () => {
         </div>
 
         <form onSubmit={handleAuth} className="space-y-4">
+          {isSignUp && (
+            <>
+              <div className="space-y-2">
+                <label className="text-sm text-muted-foreground">Full Name</label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder="John Doe"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className="pl-11"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm text-muted-foreground">Your Account ID</label>
+                <div className="relative">
+                  <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    value={generateUserIdPreview()}
+                    className="pl-11 bg-muted/50"
+                    disabled
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground">Auto-generated unique ID</p>
+              </div>
+            </>
+          )}
+
           <div className="space-y-2">
             <label className="text-sm text-muted-foreground">Email</label>
             <div className="relative">
@@ -152,6 +225,23 @@ const Auth = () => {
               />
             </div>
           </div>
+
+          {isSignUp && (
+            <div className="space-y-2">
+              <label className="text-sm text-muted-foreground">Confirm Password</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Input
+                  type="password"
+                  placeholder="••••••••"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="pl-11"
+                  required
+                />
+              </div>
+            </div>
+          )}
 
           <Button type="submit" variant="hero" size="lg" className="w-full" disabled={isLoading}>
             {isLoading ? (
