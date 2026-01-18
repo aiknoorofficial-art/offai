@@ -52,6 +52,9 @@ const Video = () => {
               <VideoIcon className="w-4 h-4" />
               AI Video Generator
             </div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-destructive/20 border border-destructive/30 text-destructive text-xs font-medium mb-6 ml-2">
+              Coming Soon
+            </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground text-glow mb-4">
               Generate Videos with AI
             </h1>
