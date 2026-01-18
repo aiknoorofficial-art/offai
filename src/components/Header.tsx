@@ -38,7 +38,10 @@ export const Header = ({ user }: HeaderProps) => {
                 <Button variant="ghost" size="sm">Chat</Button>
               </Link>
               <Link to="/generate">
-                <Button variant="ghost" size="sm">Generate</Button>
+                <Button variant="ghost" size="sm">Code</Button>
+              </Link>
+              <Link to="/video">
+                <Button variant="ghost" size="sm">Video</Button>
               </Link>
               <Button variant="outline" size="sm" onClick={handleSignOut}>
                 <LogOut className="w-4 h-4 mr-2" />
