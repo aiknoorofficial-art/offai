@@ -11,6 +11,7 @@ import Chat from "./pages/Chat";
 import Changelog from "./pages/Changelog";
 import NotFound from "./pages/NotFound";
 import { WhatsNewModal } from "./components/WhatsNewModal";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -22,12 +23,12 @@ const App = () => (
       <BrowserRouter>
         <WhatsNewModal />
         <Routes>
-          <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
-          <Route path="/generate" element={<Generate />} />
-          <Route path="/video" element={<Video />} />
-          <Route path="/chat" element={<Chat />} />
-          <Route path="/changelog" element={<Changelog />} />
+          <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+          <Route path="/generate" element={<ProtectedRoute><Generate /></ProtectedRoute>} />
+          <Route path="/video" element={<ProtectedRoute><Video /></ProtectedRoute>} />
+          <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
+          <Route path="/changelog" element={<ProtectedRoute><Changelog /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
