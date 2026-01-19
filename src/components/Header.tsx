@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
-import { LogOut, Zap } from "lucide-react";
+import { LogOut, Zap, User as UserIcon } from "lucide-react";
 import { TransactionModal } from "./TransactionModal";
 
 interface HeaderProps {
@@ -42,6 +42,11 @@ export const Header = ({ user }: HeaderProps) => {
               </Link>
               <Link to="/video">
                 <Button variant="ghost" size="sm">Video</Button>
+              </Link>
+              <Link to="/profile">
+                <Button variant="ghost" size="icon">
+                  <UserIcon className="w-4 h-4" />
+                </Button>
               </Link>
               <Button variant="outline" size="sm" onClick={handleSignOut}>
                 <LogOut className="w-4 h-4 mr-2" />
