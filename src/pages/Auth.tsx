@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Zap, Mail, Lock, ArrowLeft, Loader2, User, Hash, CheckCircle } from "lucide-react";
+import { Zap, Mail, Lock, ArrowLeft, Loader2, User, Hash } from "lucide-react";
 import { z } from "zod";
 
 const emailSchema = z.string().email("Please enter a valid email address");
@@ -41,7 +41,6 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showVerificationMessage, setShowVerificationMessage] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   useEffect(() => {
@@ -124,13 +123,12 @@ const Auth = () => {
               user_id: data.user.id,
               full_name: fullName,
             });
-          if (profileError && !profileError.message.includes('duplicate')) {
+        if (profileError && !profileError.message.includes('duplicate')) {
             console.error("Profile creation error:", profileError);
           }
         }
         
-        setShowVerificationMessage(true);
-        toast.success("Please check your email to verify your account!");
+        toast.success("Account created successfully!");
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -192,47 +190,7 @@ const Auth = () => {
           Back to Home
         </Button>
 
-        {showVerificationMessage ? (
-          <div className="text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-green-500/20 border border-green-500/30 mb-4">
-              <CheckCircle className="w-8 h-8 text-green-500" />
-            </div>
-            <h1 className="text-3xl font-bold text-foreground text-glow mb-4">
-              Check Your Email
-            </h1>
-            <p className="text-muted-foreground mb-6">
-              We've sent a verification link to <span className="text-primary font-medium">{email}</span>. 
-              Please check your inbox and click the link to verify your account.
-            </p>
-            <div className="space-y-3">
-              <p className="text-sm text-muted-foreground">
-                Didn't receive the email? Check your spam folder or
-              </p>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setShowVerificationMessage(false);
-                  setIsSignUp(true);
-                }}
-              >
-                Try again with a different email
-              </Button>
-              <div className="pt-2">
-                <button
-                  onClick={() => {
-                    setShowVerificationMessage(false);
-                    setIsSignUp(false);
-                  }}
-                  className="text-primary hover:underline text-sm"
-                >
-                  Already verified? Sign in
-                </button>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <>
-            <div className="text-center mb-8">
+        <div className="text-center mb-8">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-primary shadow-[0_0_40px_hsl(50_100%_50%/0.5)] mb-4">
                 <Zap className="w-8 h-8 text-primary-foreground" />
               </div>
@@ -381,8 +339,6 @@ const Auth = () => {
             )}
           </button>
         </div>
-          </>
-        )}
       </div>
     </div>
   );
