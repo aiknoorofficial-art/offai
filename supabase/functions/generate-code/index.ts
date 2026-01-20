@@ -1,9 +1,17 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+// Input validation schema
+const codeGenSchema = z.object({
+  prompt: z.string().min(1).max(5000),
+  language: z.string().regex(/^[a-z0-9-]+$/i).max(50).optional(),
+});
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -11,12 +19,60 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt, language } = await req.json();
+    // Authentication check
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      console.log("Missing or invalid authorization header");
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: claimsData, error: claimsError } = await supabaseClient.auth.getClaims(token);
+    
+    if (claimsError || !claimsData?.claims) {
+      console.log("Authentication failed:", claimsError?.message);
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const userId = claimsData.claims.sub;
+    console.log("Authenticated user:", userId);
+
+    // Parse and validate input
+    const body = await req.json();
+    const validationResult = codeGenSchema.safeParse(body);
+    
+    if (!validationResult.success) {
+      console.log("Validation failed:", validationResult.error.issues);
+      return new Response(
+        JSON.stringify({ error: "Invalid input: " + validationResult.error.issues[0].message }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const { prompt, language } = validationResult.data;
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+      console.error("LOVABLE_API_KEY is not configured");
+      return new Response(
+        JSON.stringify({ error: "Service configuration error" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
+
+    console.log("Processing code generation for user:", userId, "language:", language || "auto");
 
     const systemPrompt = `You are an expert programmer. Generate clean, well-commented, production-ready code based on the user's request.
 
@@ -60,8 +116,7 @@ Respond ONLY with the code, no explanations before or after. Use markdown code b
           { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
-      const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
+      console.error("AI gateway error:", response.status);
       return new Response(
         JSON.stringify({ error: "Failed to generate code" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -74,7 +129,7 @@ Respond ONLY with the code, no explanations before or after. Use markdown code b
   } catch (error) {
     console.error("generate-code error:", error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
+      JSON.stringify({ error: "An error occurred processing your request" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
