@@ -49,75 +49,149 @@ serve(async (req) => {
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const RUNWAY_API_KEY = Deno.env.get("RUNWAY_API_KEY");
     
-    if (!LOVABLE_API_KEY) {
-      console.error("LOVABLE_API_KEY is not configured");
+    if (!RUNWAY_API_KEY) {
+      console.error("RUNWAY_API_KEY is not configured");
       return new Response(
-        JSON.stringify({ error: "Service configuration error" }),
+        JSON.stringify({ error: "Video generation service is not configured. Please add your Runway API key." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    console.log("Generating video for user:", userId, "prompt:", prompt.substring(0, 50));
+    console.log("Starting video generation for user:", userId, "prompt:", prompt.substring(0, 50));
 
-    // Use Lovable AI to generate an image first (as a video thumbnail/frame)
-    // Note: Full video generation requires specialized video APIs
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    // Convert aspect ratio to Runway format
+    const runwayRatio = aspectRatio === "16:9" ? "1280:768" 
+      : aspectRatio === "9:16" ? "768:1280"
+      : aspectRatio === "1:1" ? "768:768"
+      : "1280:768";
+
+    // Step 1: Create a video generation task with Runway Gen-3 Alpha Turbo
+    const createResponse = await fetch("https://api.dev.runwayml.com/v1/text_to_video", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Authorization": `Bearer ${RUNWAY_API_KEY}`,
         "Content-Type": "application/json",
+        "X-Runway-Version": "2024-11-06"
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
-        messages: [
-          {
-            role: "user",
-            content: `Generate a cinematic, high-quality video frame/scene for: ${prompt}. Make it look like a still from a professional video. Aspect ratio: ${aspectRatio}. Ultra high resolution.`
-          }
-        ],
-        modalities: ["image", "text"]
+        model: "gen3a_turbo",
+        promptText: prompt,
+        duration: duration,
+        ratio: runwayRatio,
+        watermark: false
       }),
     });
 
-    if (!response.ok) {
-      if (response.status === 429) {
+    if (!createResponse.ok) {
+      const errorText = await createResponse.text();
+      console.error("Runway API error:", createResponse.status, errorText);
+      
+      if (createResponse.status === 401) {
+        return new Response(
+          JSON.stringify({ error: "Invalid Runway API key. Please check your API key." }),
+          { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      if (createResponse.status === 429) {
         return new Response(
           JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
-      if (response.status === 402) {
+      if (createResponse.status === 402) {
         return new Response(
-          JSON.stringify({ error: "Usage limit reached. Please add credits to continue." }),
+          JSON.stringify({ error: "Insufficient Runway credits. Please add more credits to your account." }),
           { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
-      const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
+      
       return new Response(
-        JSON.stringify({ error: "Failed to generate video frame" }),
+        JSON.stringify({ error: "Failed to start video generation", details: errorText }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const data = await response.json();
-    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-    const textResponse = data.choices?.[0]?.message?.content || "";
-
-    if (!imageUrl) {
+    const createData = await createResponse.json();
+    const taskId = createData.id;
+    
+    if (!taskId) {
+      console.error("No task ID returned:", createData);
       return new Response(
-        JSON.stringify({ error: "Failed to generate video frame", details: textResponse }),
+        JSON.stringify({ error: "Failed to start video generation task" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    console.log("Video generation task started:", taskId);
+
+    // Step 2: Poll for completion (max 2 minutes)
+    const maxAttempts = 24; // 24 * 5 seconds = 2 minutes
+    let attempts = 0;
+    let videoUrl = null;
+    let status = "PENDING";
+
+    while (attempts < maxAttempts && !videoUrl) {
+      await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
+      
+      const statusResponse = await fetch(`https://api.dev.runwayml.com/v1/tasks/${taskId}`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${RUNWAY_API_KEY}`,
+          "X-Runway-Version": "2024-11-06"
+        },
+      });
+
+      if (!statusResponse.ok) {
+        console.error("Status check failed:", statusResponse.status);
+        attempts++;
+        continue;
+      }
+
+      const statusData = await statusResponse.json();
+      status = statusData.status;
+      
+      console.log(`Task ${taskId} status: ${status} (attempt ${attempts + 1})`);
+
+      if (status === "SUCCEEDED") {
+        videoUrl = statusData.output?.[0];
+        break;
+      } else if (status === "FAILED") {
+        return new Response(
+          JSON.stringify({ error: "Video generation failed", details: statusData.failure || "Unknown error" }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      attempts++;
+    }
+
+    if (!videoUrl) {
+      // Return task ID for async polling on frontend
+      return new Response(
+        JSON.stringify({ 
+          success: true,
+          taskId: taskId,
+          status: status,
+          message: "Video generation in progress. Use the task ID to check status.",
+          prompt: prompt,
+          duration: duration,
+          aspectRatio: aspectRatio
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    console.log("Video generated successfully:", videoUrl);
 
     return new Response(
       JSON.stringify({ 
         success: true,
-        frameUrl: imageUrl,
-        message: "Video frame generated successfully. Full video generation coming soon!",
+        videoUrl: videoUrl,
+        taskId: taskId,
+        status: "SUCCEEDED",
+        message: "Video generated successfully!",
         prompt: prompt,
         duration: duration,
         aspectRatio: aspectRatio
