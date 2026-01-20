@@ -43,6 +43,9 @@ export const Header = ({ user }: HeaderProps) => {
               <Link to="/video">
                 <Button variant="ghost" size="sm">Video</Button>
               </Link>
+              <Link to="/courses">
+                <Button variant="ghost" size="sm">Courses</Button>
+              </Link>
               <Link to="/profile">
                 <Button variant="ghost" size="icon">
                   <UserIcon className="w-4 h-4" />
