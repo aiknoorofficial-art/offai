@@ -177,7 +177,7 @@ const Chat = () => {
                     className={`max-w-[80%] rounded-lg px-4 py-2 ${
                       msg.role === "user"
                         ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-foreground"
+                        : "bg-[hsl(var(--ai-response))] text-[hsl(var(--ai-response-foreground))]"
                     }`}
                   >
                     <p className="whitespace-pre-wrap">{msg.content}</p>

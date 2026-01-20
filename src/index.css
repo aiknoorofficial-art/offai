@@ -43,6 +43,8 @@
     /* Custom tokens */
     --glow-color: 50 100% 50%;
     --terminal-green: 120 100% 40%;
+    --ai-response: 0 0% 100%;
+    --ai-response-foreground: 0 0% 4%;
 
     --sidebar-background: 0 0% 6%;
     --sidebar-foreground: 50 100% 50%;
