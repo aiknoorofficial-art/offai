@@ -187,23 +187,23 @@ const Courses = () => {
 
       <main className="container mx-auto px-4 pt-24 pb-16">
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm mb-4">
-                <BookOpen className="w-4 h-4" />
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs sm:text-sm mb-4">
+                <BookOpen className="w-3 h-3 sm:w-4 sm:h-4" />
                 Courses
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground text-glow">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground text-glow">
                 Upload Courses
               </h1>
-              <p className="text-lg text-muted-foreground mt-2">
+              <p className="text-base sm:text-lg text-muted-foreground mt-2">
                 Create and manage your courses with pricing
               </p>
             </div>
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button className="gap-2">
+                <Button className="gap-2 w-full sm:w-auto">
                   <Plus className="w-4 h-4" />
                   New Course
                 </Button>
@@ -298,7 +298,7 @@ const Courses = () => {
               <p className="text-sm mt-2">Create your first course to get started</p>
             </div>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
               {courses.map((course) => (
                 <Card key={course.id} className="box-glow">
                   <CardHeader>

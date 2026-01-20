@@ -42,13 +42,13 @@ const Index = () => {
               The Future of AI Creation
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 leading-tight">
               <span className="text-foreground text-glow">Create Anything</span>
               <br />
               <span className="gradient-text">With AI Power</span>
             </h1>
 
-            <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed px-4 sm:px-0">
               OFF AI is your all-in-one AI platform. Generate code, create videos, chat with AI, and build amazing things—all in one place.
             </p>
 
@@ -82,7 +82,7 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
             <Link to={user ? "/generate" : "/auth"} className="group">
               <div className="bg-card border border-border rounded-xl p-8 hover:border-primary/50 transition-all duration-300 hover:box-glow h-full">
                 <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
@@ -137,7 +137,7 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
             <FeatureCard
               icon={<Cpu className="w-8 h-8" />}
               title="Advanced AI Models"
@@ -175,7 +175,7 @@ const Index = () => {
       {/* Stats Section */}
       <section className="py-20 px-4 bg-card/30">
         <div className="container mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 max-w-4xl mx-auto text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 max-w-4xl mx-auto text-center">
             <div>
               <div className="text-4xl font-bold text-primary mb-2">10K+</div>
               <p className="text-muted-foreground">Active Users</p>
