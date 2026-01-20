@@ -58,8 +58,8 @@ export const CodeBlock = ({ code, language }: CodeBlockProps) => {
           )}
         </Button>
       </div>
-      <pre className="p-4 overflow-x-auto">
-        <code className="font-mono text-sm text-foreground whitespace-pre-wrap">
+      <pre className="p-4 overflow-x-auto bg-[hsl(var(--ai-response-foreground))]">
+        <code className="font-mono text-sm text-[hsl(var(--ai-response))] whitespace-pre-wrap">
           {displayCode}
         </code>
       </pre>
