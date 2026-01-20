@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { AnimatedSection } from "@/components/AnimatedSection";
 import { Button } from "@/components/ui/button";
 import { User } from "@supabase/supabase-js";
 import { Zap, Code, Sparkles, Terminal, ArrowRight, Video, MessageSquare, Shield, Globe, Cpu, Users } from "lucide-react";
@@ -36,7 +37,7 @@ const Index = () => {
         </div>
 
         <div className="container mx-auto relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
+          <AnimatedSection className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm mb-8">
               <Sparkles className="w-4 h-4" />
               The Future of AI Creation
@@ -66,61 +67,67 @@ const Index = () => {
                 </Button>
               </Link>
             </div>
-          </div>
+          </AnimatedSection>
         </div>
       </section>
 
       {/* Products Section */}
       <section className="py-20 px-4 bg-card/30">
         <div className="container mx-auto">
-          <div className="text-center mb-16">
+          <AnimatedSection className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground text-glow mb-4">
               Our AI Products
             </h2>
             <p className="text-muted-foreground text-lg max-w-xl mx-auto">
               Powerful AI tools designed to supercharge your creativity and productivity
             </p>
-          </div>
+          </AnimatedSection>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
-            <Link to={user ? "/generate" : "/auth"} className="group">
-              <div className="bg-card border border-border rounded-xl p-8 hover:border-primary/50 transition-all duration-300 hover:box-glow h-full">
-                <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
-                  <Code className="w-8 h-8" />
+            <AnimatedSection animation="fade-up" delay={0}>
+              <Link to={user ? "/generate" : "/auth"} className="group block h-full">
+                <div className="bg-card border border-border rounded-xl p-8 hover:border-primary/50 transition-all duration-300 hover:box-glow h-full">
+                  <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
+                    <Code className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-2xl font-semibold text-foreground mb-3">Code Generator</h3>
+                  <p className="text-muted-foreground mb-4">Transform your ideas into production-ready code. Supports JavaScript, Python, TypeScript, Rust, Go, and more.</p>
+                  <span className="text-primary text-sm font-medium flex items-center gap-2">
+                    Try it now <ArrowRight className="w-4 h-4" />
+                  </span>
                 </div>
-                <h3 className="text-2xl font-semibold text-foreground mb-3">Code Generator</h3>
-                <p className="text-muted-foreground mb-4">Transform your ideas into production-ready code. Supports JavaScript, Python, TypeScript, Rust, Go, and more.</p>
-                <span className="text-primary text-sm font-medium flex items-center gap-2">
-                  Try it now <ArrowRight className="w-4 h-4" />
-                </span>
-              </div>
-            </Link>
+              </Link>
+            </AnimatedSection>
 
-            <Link to={user ? "/video" : "/auth"} className="group">
-              <div className="bg-card border border-border rounded-xl p-8 hover:border-primary/50 transition-all duration-300 hover:box-glow h-full">
-                <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
-                  <Video className="w-8 h-8" />
+            <AnimatedSection animation="fade-up" delay={100}>
+              <Link to={user ? "/video" : "/auth"} className="group block h-full">
+                <div className="bg-card border border-border rounded-xl p-8 hover:border-primary/50 transition-all duration-300 hover:box-glow h-full">
+                  <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
+                    <Video className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-2xl font-semibold text-foreground mb-3">Video Generator</h3>
+                  <p className="text-muted-foreground mb-4">Create stunning videos from text descriptions. AI-powered video generation for content creators and marketers.</p>
+                  <span className="text-primary text-sm font-medium flex items-center gap-2">
+                    Create video <ArrowRight className="w-4 h-4" />
+                  </span>
                 </div>
-                <h3 className="text-2xl font-semibold text-foreground mb-3">Video Generator</h3>
-                <p className="text-muted-foreground mb-4">Create stunning videos from text descriptions. AI-powered video generation for content creators and marketers.</p>
-                <span className="text-primary text-sm font-medium flex items-center gap-2">
-                  Create video <ArrowRight className="w-4 h-4" />
-                </span>
-              </div>
-            </Link>
+              </Link>
+            </AnimatedSection>
 
-            <Link to={user ? "/chat" : "/auth"} className="group">
-              <div className="bg-card border border-border rounded-xl p-8 hover:border-primary/50 transition-all duration-300 hover:box-glow h-full">
-                <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
-                  <MessageSquare className="w-8 h-8" />
+            <AnimatedSection animation="fade-up" delay={200}>
+              <Link to={user ? "/chat" : "/auth"} className="group block h-full">
+                <div className="bg-card border border-border rounded-xl p-8 hover:border-primary/50 transition-all duration-300 hover:box-glow h-full">
+                  <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
+                    <MessageSquare className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-2xl font-semibold text-foreground mb-3">AI Chat</h3>
+                  <p className="text-muted-foreground mb-4">Have intelligent conversations with our advanced AI. Get answers, brainstorm ideas, and solve problems together.</p>
+                  <span className="text-primary text-sm font-medium flex items-center gap-2">
+                    Start chatting <ArrowRight className="w-4 h-4" />
+                  </span>
                 </div>
-                <h3 className="text-2xl font-semibold text-foreground mb-3">AI Chat</h3>
-                <p className="text-muted-foreground mb-4">Have intelligent conversations with our advanced AI. Get answers, brainstorm ideas, and solve problems together.</p>
-                <span className="text-primary text-sm font-medium flex items-center gap-2">
-                  Start chatting <ArrowRight className="w-4 h-4" />
-                </span>
-              </div>
-            </Link>
+              </Link>
+            </AnimatedSection>
           </div>
         </div>
       </section>
@@ -128,46 +135,58 @@ const Index = () => {
       {/* Features Section */}
       <section className="py-20 px-4">
         <div className="container mx-auto">
-          <div className="text-center mb-16">
+          <AnimatedSection className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground text-glow mb-4">
               Why Choose OFF AI?
             </h2>
             <p className="text-muted-foreground text-lg max-w-xl mx-auto">
               Built with cutting-edge technology for maximum performance and reliability
             </p>
-          </div>
+          </AnimatedSection>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
-            <FeatureCard
-              icon={<Cpu className="w-8 h-8" />}
-              title="Advanced AI Models"
-              description="Powered by state-of-the-art language models trained on billions of parameters for accurate results."
-            />
-            <FeatureCard
-              icon={<Shield className="w-8 h-8" />}
-              title="Secure & Private"
-              description="Your data is encrypted and never shared. We prioritize your privacy and security above all."
-            />
-            <FeatureCard
-              icon={<Globe className="w-8 h-8" />}
-              title="Global Availability"
-              description="Access OFF AI from anywhere in the world with our distributed infrastructure and fast response times."
-            />
-            <FeatureCard
-              icon={<Code className="w-8 h-8" />}
-              title="Multiple Languages"
-              description="Generate code in JavaScript, Python, TypeScript, Rust, Go, and 20+ programming languages."
-            />
-            <FeatureCard
-              icon={<Terminal className="w-8 h-8" />}
-              title="Clean Output"
-              description="Get well-structured, commented code that's production-ready. No more copying from snippets."
-            />
-            <FeatureCard
-              icon={<Users className="w-8 h-8" />}
-              title="Growing Community"
-              description="Join thousands of developers and creators who trust OFF AI for their daily workflow."
-            />
+            <AnimatedSection animation="fade-up" delay={0}>
+              <FeatureCard
+                icon={<Cpu className="w-8 h-8" />}
+                title="Advanced AI Models"
+                description="Powered by state-of-the-art language models trained on billions of parameters for accurate results."
+              />
+            </AnimatedSection>
+            <AnimatedSection animation="fade-up" delay={100}>
+              <FeatureCard
+                icon={<Shield className="w-8 h-8" />}
+                title="Secure & Private"
+                description="Your data is encrypted and never shared. We prioritize your privacy and security above all."
+              />
+            </AnimatedSection>
+            <AnimatedSection animation="fade-up" delay={200}>
+              <FeatureCard
+                icon={<Globe className="w-8 h-8" />}
+                title="Global Availability"
+                description="Access OFF AI from anywhere in the world with our distributed infrastructure and fast response times."
+              />
+            </AnimatedSection>
+            <AnimatedSection animation="fade-up" delay={300}>
+              <FeatureCard
+                icon={<Code className="w-8 h-8" />}
+                title="Multiple Languages"
+                description="Generate code in JavaScript, Python, TypeScript, Rust, Go, and 20+ programming languages."
+              />
+            </AnimatedSection>
+            <AnimatedSection animation="fade-up" delay={400}>
+              <FeatureCard
+                icon={<Terminal className="w-8 h-8" />}
+                title="Clean Output"
+                description="Get well-structured, commented code that's production-ready. No more copying from snippets."
+              />
+            </AnimatedSection>
+            <AnimatedSection animation="fade-up" delay={500}>
+              <FeatureCard
+                icon={<Users className="w-8 h-8" />}
+                title="Growing Community"
+                description="Join thousands of developers and creators who trust OFF AI for their daily workflow."
+              />
+            </AnimatedSection>
           </div>
         </div>
       </section>
@@ -175,31 +194,33 @@ const Index = () => {
       {/* Stats Section */}
       <section className="py-20 px-4 bg-card/30">
         <div className="container mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 max-w-4xl mx-auto text-center">
-            <div>
-              <div className="text-4xl font-bold text-primary mb-2">10K+</div>
-              <p className="text-muted-foreground">Active Users</p>
+          <AnimatedSection>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 max-w-4xl mx-auto text-center">
+              <div>
+                <div className="text-4xl font-bold text-primary mb-2">10K+</div>
+                <p className="text-muted-foreground">Active Users</p>
+              </div>
+              <div>
+                <div className="text-4xl font-bold text-primary mb-2">1M+</div>
+                <p className="text-muted-foreground">Code Generated</p>
+              </div>
+              <div>
+                <div className="text-4xl font-bold text-primary mb-2">50+</div>
+                <p className="text-muted-foreground">Languages Supported</p>
+              </div>
+              <div>
+                <div className="text-4xl font-bold text-primary mb-2">99.9%</div>
+                <p className="text-muted-foreground">Uptime</p>
+              </div>
             </div>
-            <div>
-              <div className="text-4xl font-bold text-primary mb-2">1M+</div>
-              <p className="text-muted-foreground">Code Generated</p>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-primary mb-2">50+</div>
-              <p className="text-muted-foreground">Languages Supported</p>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-primary mb-2">99.9%</div>
-              <p className="text-muted-foreground">Uptime</p>
-            </div>
-          </div>
+          </AnimatedSection>
         </div>
       </section>
 
       {/* CTA Section */}
       <section className="py-20 px-4">
         <div className="container mx-auto">
-          <div className="max-w-3xl mx-auto text-center">
+          <AnimatedSection className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground text-glow mb-6">
               Ready to Create with AI?
             </h2>
@@ -219,7 +240,7 @@ const Index = () => {
                 </Button>
               </Link>
             </div>
-          </div>
+          </AnimatedSection>
         </div>
       </section>
 
