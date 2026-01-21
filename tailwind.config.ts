@@ -78,8 +78,16 @@ export default {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'
   			},
-  			glow: 'hsl(var(--glow-color))',
-  			terminal: 'hsl(var(--terminal-green))',
+			glow: 'hsl(var(--glow-color))',
+			terminal: 'hsl(var(--terminal-green))',
+			neon: {
+				cyan: 'hsl(var(--neon-cyan))',
+				magenta: 'hsl(var(--neon-magenta))',
+				yellow: 'hsl(var(--neon-yellow))',
+				purple: 'hsl(var(--neon-purple))',
+				green: 'hsl(var(--neon-green))',
+				orange: 'hsl(var(--neon-orange))',
+			},
   			sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',
   				foreground: 'hsl(var(--sidebar-foreground))',
