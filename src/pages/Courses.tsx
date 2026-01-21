@@ -6,7 +6,7 @@ import { User } from "@supabase/supabase-js";
 import { toast } from "sonner";
 import { 
   BookOpen, Upload, Plus, Trash2, DollarSign, Image, 
-  CreditCard, User as UserIcon, Star, MessageCircle, Send 
+  CreditCard, User as UserIcon, Star, MessageCircle, Send, ShoppingCart, Package
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -74,6 +74,11 @@ const Courses = () => {
   const [newComment, setNewComment] = useState("");
   const [newRating, setNewRating] = useState(5);
   const [submittingReview, setSubmittingReview] = useState(false);
+
+  // Order states
+  const [orderMessage, setOrderMessage] = useState("");
+  const [submittingOrder, setSubmittingOrder] = useState(false);
+  const [showOrderForm, setShowOrderForm] = useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -335,6 +340,39 @@ const Courses = () => {
       toast.error("Failed to delete review");
     }
   };
+
+  const submitOrder = async () => {
+    if (!orderMessage.trim()) {
+      toast.error("Please enter a message for the seller");
+      return;
+    }
+    if (!selectedCourse || !user) return;
+
+    setSubmittingOrder(true);
+    try {
+      const { error } = await supabase
+        .from("course_orders")
+        .insert({
+          course_id: selectedCourse.id,
+          buyer_id: user.id,
+          seller_id: selectedCourse.user_id,
+          message: orderMessage.trim(),
+        });
+
+      if (error) throw error;
+
+      toast.success("Order sent to the publisher!");
+      setOrderMessage("");
+      setShowOrderForm(false);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to send order");
+    } finally {
+      setSubmittingOrder(false);
+    }
+  };
+
+  // Check if current user is the course owner
+  const isOwner = selectedCourse?.user_id === user?.id;
 
   return (
     <div className="min-h-screen bg-background">
@@ -604,9 +642,11 @@ const Courses = () => {
                     <div className="text-4xl font-bold text-neon-cyan mb-4">
                       PKR {selectedCourse.price.toLocaleString()}
                     </div>
-                    {(selectedCourse.account_name || selectedCourse.account_number) && (
-                      <div className="space-y-3">
-                        <p className="text-muted-foreground font-semibold text-lg">Payment Details:</p>
+                    
+                    {/* Payment details only visible to course owner */}
+                    {isOwner && (selectedCourse.account_name || selectedCourse.account_number) && (
+                      <div className="space-y-3 mb-4">
+                        <p className="text-muted-foreground font-semibold text-lg">Your Payment Details:</p>
                         {selectedCourse.account_name && (
                           <div className="flex items-center gap-3 text-lg">
                             <UserIcon className="w-5 h-5 text-neon-magenta" />
@@ -617,6 +657,52 @@ const Courses = () => {
                           <div className="flex items-center gap-3 text-lg">
                             <CreditCard className="w-5 h-5 text-neon-magenta" />
                             <span className="font-mono">{selectedCourse.account_number}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Order Button for non-owners */}
+                    {!isOwner && (
+                      <div className="space-y-4">
+                        {!showOrderForm ? (
+                          <Button
+                            onClick={() => setShowOrderForm(true)}
+                            className="w-full bg-gradient-to-r from-neon-orange to-neon-magenta hover:opacity-90 text-lg py-6"
+                          >
+                            <ShoppingCart className="w-5 h-5 mr-2" />
+                            Order Now
+                          </Button>
+                        ) : (
+                          <div className="space-y-3 p-4 rounded-lg bg-secondary/30 border border-neon-orange/30">
+                            <p className="text-sm text-muted-foreground">
+                              Send a message to the publisher to order this course:
+                            </p>
+                            <Textarea
+                              placeholder="Hi, I'm interested in this course. Please share payment details..."
+                              value={orderMessage}
+                              onChange={(e) => setOrderMessage(e.target.value)}
+                              className="border-neon-cyan/30 min-h-[100px]"
+                            />
+                            <div className="flex gap-2">
+                              <Button
+                                onClick={submitOrder}
+                                disabled={submittingOrder}
+                                className="flex-1 bg-gradient-to-r from-neon-cyan to-neon-purple"
+                              >
+                                <Send className="w-4 h-4 mr-2" />
+                                {submittingOrder ? "Sending..." : "Send Order"}
+                              </Button>
+                              <Button
+                                variant="outline"
+                                onClick={() => {
+                                  setShowOrderForm(false);
+                                  setOrderMessage("");
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                            </div>
                           </div>
                         )}
                       </div>
@@ -640,7 +726,7 @@ const Courses = () => {
                   )}
 
                   {/* Delete Button for Owner */}
-                  {selectedCourse.user_id === user?.id && (
+                  {isOwner && (
                     <Button
                       variant="destructive"
                       onClick={(e) => {

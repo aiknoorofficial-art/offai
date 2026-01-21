@@ -136,13 +136,6 @@ export type Database = {
             referencedRelation: "courses"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "course_orders_course_id_fkey"
-            columns: ["course_id"]
-            isOneToOne: false
-            referencedRelation: "courses_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
       course_reviews: {
@@ -179,13 +172,6 @@ export type Database = {
             columns: ["course_id"]
             isOneToOne: false
             referencedRelation: "courses"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "course_reviews_course_id_fkey"
-            columns: ["course_id"]
-            isOneToOne: false
-            referencedRelation: "courses_public"
             referencedColumns: ["id"]
           },
         ]
@@ -261,51 +247,7 @@ export type Database = {
       }
     }
     Views: {
-      courses_public: {
-        Row: {
-          account_name: string | null
-          account_number: string | null
-          created_at: string | null
-          description: string | null
-          file_name: string | null
-          file_url: string | null
-          id: string | null
-          image_url: string | null
-          price: number | null
-          title: string | null
-          updated_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          account_name?: never
-          account_number?: never
-          created_at?: string | null
-          description?: string | null
-          file_name?: string | null
-          file_url?: string | null
-          id?: string | null
-          image_url?: string | null
-          price?: number | null
-          title?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          account_name?: never
-          account_number?: never
-          created_at?: string | null
-          description?: string | null
-          file_name?: string | null
-          file_url?: string | null
-          id?: string | null
-          image_url?: string | null
-          price?: number | null
-          title?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       [_ in never]: never
