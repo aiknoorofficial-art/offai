@@ -45,6 +45,9 @@ interface Review {
   rating: number | null;
   comment: string;
   created_at: string;
+  profiles: {
+    full_name: string;
+  } | null;
 }
 
 const Courses = () => {
@@ -112,14 +115,17 @@ const Courses = () => {
     setLoadingReviews(true);
     const { data, error } = await supabase
       .from("course_reviews")
-      .select("*")
+      .select(`
+        *,
+        profiles:user_id (full_name)
+      `)
       .eq("course_id", courseId)
       .order("created_at", { ascending: false });
 
     if (error) {
       console.error("Failed to load reviews:", error);
     } else {
-      setReviews(data || []);
+      setReviews((data as Review[]) || []);
     }
     setLoadingReviews(false);
   };
@@ -672,6 +678,9 @@ const Courses = () => {
                           >
                             <div className="flex items-center justify-between mb-2">
                               <div className="flex items-center gap-2">
+                                <span className="text-sm font-medium text-neon-cyan">
+                                  {review.profiles?.full_name || "Anonymous"}
+                                </span>
                                 {review.rating && (
                                   <div className="flex gap-0.5">
                                     {[1, 2, 3, 4, 5].map((star) => (
