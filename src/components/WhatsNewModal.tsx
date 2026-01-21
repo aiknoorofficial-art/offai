@@ -6,12 +6,37 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Zap, Code, Shield, MessageCircle, Wallet, BanknoteIcon, Rocket } from "lucide-react";
+import { Sparkles, Zap, Code, Shield, MessageCircle, Wallet, BanknoteIcon, Rocket, Globe, Layout } from "lucide-react";
 import { useEffect, useState } from "react";
 
 // Update this version and changelog when releasing updates
-const CURRENT_VERSION = "1.2.0";
+const CURRENT_VERSION = "1.3.0";
 const CHANGELOG = [
+  {
+    version: "1.3.0",
+    date: "January 2026",
+    title: "🌐 Website Builder Coming Soon!",
+    features: [
+      {
+        icon: Layout,
+        title: "🔧 Website Maker",
+        description: "Build stunning websites with drag-and-drop simplicity — no coding required!",
+        comingSoon: true,
+      },
+      {
+        icon: Globe,
+        title: "🚀 Website Publisher",
+        description: "Publish your websites instantly to the web with one click deployment!",
+        comingSoon: true,
+      },
+      {
+        icon: Sparkles,
+        title: "AI-Powered Design",
+        description: "Let AI help you create beautiful layouts and suggest design improvements",
+        comingSoon: true,
+      },
+    ],
+  },
   {
     version: "1.2.0",
     date: "January 2026",
@@ -106,13 +131,13 @@ export const WhatsNewModal = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="sm:max-w-md border-primary/30 bg-card">
+      <DialogContent className="sm:max-w-md border-neon-cyan/30 bg-card/95 backdrop-blur-sm">
         <DialogHeader>
           <div className="flex items-center gap-2">
-            <DialogTitle className="text-xl text-primary text-glow">
+            <DialogTitle className="text-xl gradient-text-multi">
               What's New in OFF AI
             </DialogTitle>
-            <Badge variant="outline" className="border-primary text-primary">
+            <Badge variant="outline" className="border-neon-cyan text-neon-cyan">
               v{latestUpdate.version}
             </Badge>
           </div>
@@ -128,13 +153,20 @@ export const WhatsNewModal = () => {
             {latestUpdate.features.map((feature, index) => (
               <div
                 key={index}
-                className="flex items-start gap-3 p-3 rounded-lg bg-secondary/50 border border-border"
+                className="flex items-start gap-3 p-3 rounded-lg bg-secondary/30 border border-neon-purple/20 hover:border-neon-purple/40 transition-colors"
               >
-                <div className="w-8 h-8 rounded-md bg-primary/20 flex items-center justify-center flex-shrink-0">
-                  <feature.icon className="w-4 h-4 text-primary" />
+                <div className="w-8 h-8 rounded-md bg-gradient-to-br from-neon-cyan/20 to-neon-magenta/20 flex items-center justify-center flex-shrink-0">
+                  <feature.icon className="w-4 h-4 text-neon-cyan" />
                 </div>
-                <div>
-                  <h4 className="font-medium text-foreground">{feature.title}</h4>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-medium text-foreground">{feature.title}</h4>
+                    {'comingSoon' in feature && feature.comingSoon && (
+                      <Badge className="bg-neon-magenta/20 text-neon-magenta border-neon-magenta/30 text-xs">
+                        Coming Soon
+                      </Badge>
+                    )}
+                  </div>
                   <p className="text-sm text-muted-foreground">
                     {feature.description}
                   </p>
@@ -144,7 +176,7 @@ export const WhatsNewModal = () => {
           </div>
         </div>
 
-        <Button onClick={handleClose} variant="glow" className="w-full">
+        <Button onClick={handleClose} className="w-full bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-magenta hover:opacity-90 text-background">
           Got it, let's go!
         </Button>
       </DialogContent>
