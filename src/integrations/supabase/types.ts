@@ -97,35 +97,82 @@ export type Database = {
         }
         Relationships: []
       }
+      course_reviews: {
+        Row: {
+          comment: string
+          course_id: string
+          created_at: string
+          id: string
+          rating: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          comment: string
+          course_id: string
+          created_at?: string
+          id?: string
+          rating?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          comment?: string
+          course_id?: string
+          created_at?: string
+          id?: string
+          rating?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_reviews_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       courses: {
         Row: {
+          account_name: string | null
+          account_number: string | null
           created_at: string
           description: string | null
           file_name: string | null
           file_url: string | null
           id: string
+          image_url: string | null
           price: number
           title: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          account_name?: string | null
+          account_number?: string | null
           created_at?: string
           description?: string | null
           file_name?: string | null
           file_url?: string | null
           id?: string
+          image_url?: string | null
           price?: number
           title: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          account_name?: string | null
+          account_number?: string | null
           created_at?: string
           description?: string | null
           file_name?: string | null
           file_url?: string | null
           id?: string
+          image_url?: string | null
           price?: number
           title?: string
           updated_at?: string
