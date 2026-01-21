@@ -113,19 +113,33 @@ const Courses = () => {
 
   const fetchReviews = async (courseId: string) => {
     setLoadingReviews(true);
-    const { data, error } = await supabase
+    const { data: reviewsData, error } = await supabase
       .from("course_reviews")
-      .select(`
-        *,
-        profiles:user_id (full_name)
-      `)
+      .select("*")
       .eq("course_id", courseId)
       .order("created_at", { ascending: false });
 
     if (error) {
       console.error("Failed to load reviews:", error);
-    } else {
-      setReviews((data as Review[]) || []);
+      setReviews([]);
+    } else if (reviewsData) {
+      // Fetch profiles for each review
+      const userIds = [...new Set(reviewsData.map(r => r.user_id))];
+      const { data: profilesData } = await supabase
+        .from("profiles")
+        .select("user_id, full_name")
+        .in("user_id", userIds);
+
+      const profilesMap = new Map(profilesData?.map(p => [p.user_id, p.full_name]) || []);
+      
+      const reviewsWithProfiles: Review[] = reviewsData.map(review => ({
+        ...review,
+        profiles: profilesMap.has(review.user_id) 
+          ? { full_name: profilesMap.get(review.user_id)! }
+          : null
+      }));
+      
+      setReviews(reviewsWithProfiles);
     }
     setLoadingReviews(false);
   };
@@ -492,7 +506,7 @@ const Courses = () => {
               <p className="text-lg">No courses yet</p>
               <p className="text-sm mt-2">Create your first course to get started</p>
             </div>
-          ) : (
+          ) : !selectedCourse ? (
             <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {courses.map((course) => (
                 <Card 
@@ -543,49 +557,65 @@ const Courses = () => {
                 </Card>
               ))}
             </div>
-          )}
-        </div>
-      </main>
+          ) : (
+            /* Full Page Course Detail View */
+            <div className="space-y-6">
+              {/* Back Button */}
+              <Button
+                variant="ghost"
+                onClick={() => setSelectedCourse(null)}
+                className="text-neon-cyan hover:text-neon-cyan/80 hover:bg-neon-cyan/10"
+              >
+                ← Back to Courses
+              </Button>
 
-      {/* Course Detail Modal */}
-      <Dialog open={!!selectedCourse} onOpenChange={() => setSelectedCourse(null)}>
-        <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-hidden border-neon-cyan/30">
-          {selectedCourse && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="gradient-text-multi text-2xl">{selectedCourse.title}</DialogTitle>
-              </DialogHeader>
-              
-              <ScrollArea className="max-h-[70vh] pr-4">
-                <div className="space-y-6">
-                  {/* Course Image */}
-                  {selectedCourse.image_url && (
-                    <div className="rounded-lg overflow-hidden">
-                      <img 
-                        src={selectedCourse.image_url} 
-                        alt={selectedCourse.title}
-                        className="w-full h-48 object-cover"
-                      />
+              {/* Course Header */}
+              <div className="grid md:grid-cols-2 gap-8">
+                {/* Course Image */}
+                <div className="rounded-xl overflow-hidden border border-neon-cyan/20 shadow-[0_0_30px_rgba(0,255,255,0.1)]">
+                  {selectedCourse.image_url ? (
+                    <img 
+                      src={selectedCourse.image_url} 
+                      alt={selectedCourse.title}
+                      className="w-full h-64 md:h-80 object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-64 md:h-80 bg-gradient-to-br from-neon-cyan/20 to-neon-magenta/20 flex items-center justify-center">
+                      <BookOpen className="w-20 h-20 text-neon-purple/50" />
                     </div>
                   )}
+                </div>
+
+                {/* Course Info */}
+                <div className="space-y-6">
+                  <div>
+                    <h1 className="text-3xl md:text-4xl font-bold gradient-text-multi mb-3">
+                      {selectedCourse.title}
+                    </h1>
+                    {selectedCourse.description && (
+                      <p className="text-muted-foreground whitespace-pre-wrap text-lg">
+                        {selectedCourse.description}
+                      </p>
+                    )}
+                  </div>
 
                   {/* Price & Payment Info */}
-                  <div className="p-4 rounded-lg bg-gradient-to-r from-neon-cyan/10 to-neon-magenta/10 border border-neon-cyan/20">
-                    <div className="text-3xl font-bold text-neon-cyan mb-3">
+                  <div className="p-6 rounded-xl bg-gradient-to-r from-neon-cyan/10 to-neon-magenta/10 border border-neon-cyan/30">
+                    <div className="text-4xl font-bold text-neon-cyan mb-4">
                       PKR {selectedCourse.price.toLocaleString()}
                     </div>
                     {(selectedCourse.account_name || selectedCourse.account_number) && (
-                      <div className="space-y-2 text-sm">
-                        <p className="text-muted-foreground font-medium">Payment Details:</p>
+                      <div className="space-y-3">
+                        <p className="text-muted-foreground font-semibold text-lg">Payment Details:</p>
                         {selectedCourse.account_name && (
-                          <div className="flex items-center gap-2">
-                            <UserIcon className="w-4 h-4 text-neon-magenta" />
+                          <div className="flex items-center gap-3 text-lg">
+                            <UserIcon className="w-5 h-5 text-neon-magenta" />
                             <span>{selectedCourse.account_name}</span>
                           </div>
                         )}
                         {selectedCourse.account_number && (
-                          <div className="flex items-center gap-2">
-                            <CreditCard className="w-4 h-4 text-neon-magenta" />
+                          <div className="flex items-center gap-3 text-lg">
+                            <CreditCard className="w-5 h-5 text-neon-magenta" />
                             <span className="font-mono">{selectedCourse.account_number}</span>
                           </div>
                         )}
@@ -593,135 +623,150 @@ const Courses = () => {
                     )}
                   </div>
 
-                  {/* Description */}
-                  {selectedCourse.description && (
-                    <div>
-                      <h4 className="font-semibold text-foreground mb-2">Description</h4>
-                      <p className="text-muted-foreground whitespace-pre-wrap">{selectedCourse.description}</p>
-                    </div>
-                  )}
-
                   {/* Course File */}
                   {selectedCourse.file_url && (
                     <div>
-                      <h4 className="font-semibold text-foreground mb-2">Course Material</h4>
+                      <h4 className="font-semibold text-foreground mb-3 text-lg">Course Material</h4>
                       <a
                         href={selectedCourse.file_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-neon-purple/20 text-neon-purple hover:bg-neon-purple/30 transition-colors"
+                        className="inline-flex items-center gap-3 px-6 py-3 rounded-lg bg-neon-purple/20 text-neon-purple hover:bg-neon-purple/30 transition-colors text-lg font-medium"
                       >
-                        <Upload className="w-4 h-4" />
+                        <Upload className="w-5 h-5" />
                         {selectedCourse.file_name || "Download File"}
                       </a>
                     </div>
                   )}
 
-                  {/* Reviews Section */}
-                  <div className="border-t border-border pt-6">
-                    <h4 className="font-semibold text-foreground mb-4 flex items-center gap-2">
-                      <MessageCircle className="w-5 h-5 text-neon-cyan" />
-                      Reviews & Comments
-                    </h4>
+                  {/* Delete Button for Owner */}
+                  {selectedCourse.user_id === user?.id && (
+                    <Button
+                      variant="destructive"
+                      onClick={(e) => {
+                        handleDelete(selectedCourse, e);
+                        setSelectedCourse(null);
+                      }}
+                      className="w-full"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Delete Course
+                    </Button>
+                  )}
+                </div>
+              </div>
 
-                    {/* Add Review Form */}
-                    <div className="p-4 rounded-lg bg-secondary/30 border border-neon-purple/20 mb-4">
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className="text-sm text-muted-foreground">Rating:</span>
-                        <div className="flex gap-1">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <button
-                              key={star}
-                              type="button"
-                              onClick={() => setNewRating(star)}
-                              className="focus:outline-none"
-                            >
-                              <Star 
-                                className={`w-5 h-5 transition-colors ${
-                                  star <= newRating 
-                                    ? "fill-neon-orange text-neon-orange" 
-                                    : "text-muted-foreground"
-                                }`} 
-                              />
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Input
-                          placeholder="Share your thoughts..."
-                          value={newComment}
-                          onChange={(e) => setNewComment(e.target.value)}
-                          className="flex-1 border-neon-cyan/30"
-                        />
-                        <Button 
-                          onClick={submitReview} 
-                          disabled={submittingReview}
-                          className="bg-gradient-to-r from-neon-cyan to-neon-purple"
+              {/* Reviews Section */}
+              <div className="border-t border-border pt-8">
+                <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-3">
+                  <MessageCircle className="w-7 h-7 text-neon-cyan" />
+                  Reviews & Comments
+                </h2>
+
+                {/* Add Review Form */}
+                <div className="p-6 rounded-xl bg-secondary/30 border border-neon-purple/20 mb-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="text-muted-foreground font-medium">Your Rating:</span>
+                    <div className="flex gap-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setNewRating(star)}
+                          className="focus:outline-none"
                         >
-                          <Send className="w-4 h-4" />
-                        </Button>
-                      </div>
+                          <Star 
+                            className={`w-7 h-7 transition-colors ${
+                              star <= newRating 
+                                ? "fill-neon-orange text-neon-orange" 
+                                : "text-muted-foreground hover:text-neon-orange/50"
+                            }`} 
+                          />
+                        </button>
+                      ))}
                     </div>
-
-                    {/* Reviews List */}
-                    {loadingReviews ? (
-                      <p className="text-muted-foreground text-center py-4">Loading reviews...</p>
-                    ) : reviews.length === 0 ? (
-                      <p className="text-muted-foreground text-center py-4">No reviews yet. Be the first!</p>
-                    ) : (
-                      <div className="space-y-3">
-                        {reviews.map((review) => (
-                          <div 
-                            key={review.id} 
-                            className="p-3 rounded-lg bg-secondary/20 border border-border"
-                          >
-                            <div className="flex items-center justify-between mb-2">
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium text-neon-cyan">
-                                  {review.profiles?.full_name || "Anonymous"}
-                                </span>
-                                {review.rating && (
-                                  <div className="flex gap-0.5">
-                                    {[1, 2, 3, 4, 5].map((star) => (
-                                      <Star 
-                                        key={star}
-                                        className={`w-3 h-3 ${
-                                          star <= review.rating! 
-                                            ? "fill-neon-orange text-neon-orange" 
-                                            : "text-muted-foreground"
-                                        }`} 
-                                      />
-                                    ))}
-                                  </div>
-                                )}
-                                <span className="text-xs text-muted-foreground">
-                                  {new Date(review.created_at).toLocaleDateString()}
-                                </span>
-                              </div>
-                              {review.user_id === user?.id && (
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => deleteReview(review.id)}
-                                  className="h-6 w-6 text-destructive hover:text-destructive"
-                                >
-                                  <Trash2 className="w-3 h-3" />
-                                </Button>
-                              )}
-                            </div>
-                            <p className="text-sm text-foreground">{review.comment}</p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                  </div>
+                  <div className="flex gap-3">
+                    <Input
+                      placeholder="Share your thoughts about this course..."
+                      value={newComment}
+                      onChange={(e) => setNewComment(e.target.value)}
+                      className="flex-1 border-neon-cyan/30 h-12 text-lg"
+                    />
+                    <Button 
+                      onClick={submitReview} 
+                      disabled={submittingReview}
+                      className="bg-gradient-to-r from-neon-cyan to-neon-purple px-6 h-12"
+                    >
+                      <Send className="w-5 h-5 mr-2" />
+                      Post
+                    </Button>
                   </div>
                 </div>
-              </ScrollArea>
-            </>
+
+                {/* Reviews List */}
+                {loadingReviews ? (
+                  <p className="text-muted-foreground text-center py-8 text-lg">Loading reviews...</p>
+                ) : reviews.length === 0 ? (
+                  <p className="text-muted-foreground text-center py-8 text-lg">No reviews yet. Be the first to share your thoughts!</p>
+                ) : (
+                  <div className="grid gap-4 md:grid-cols-2">
+                    {reviews.map((review) => (
+                      <div 
+                        key={review.id} 
+                        className="p-5 rounded-xl bg-secondary/20 border border-border hover:border-neon-cyan/30 transition-colors"
+                      >
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-neon-cyan to-neon-magenta flex items-center justify-center text-background font-bold">
+                              {(review.profiles?.full_name || "A")[0].toUpperCase()}
+                            </div>
+                            <div>
+                              <span className="font-medium text-neon-cyan block">
+                                {review.profiles?.full_name || "Anonymous"}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {new Date(review.created_at).toLocaleDateString()}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {review.rating && (
+                              <div className="flex gap-0.5">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                  <Star 
+                                    key={star}
+                                    className={`w-4 h-4 ${
+                                      star <= review.rating! 
+                                        ? "fill-neon-orange text-neon-orange" 
+                                        : "text-muted-foreground"
+                                    }`} 
+                                  />
+                                ))}
+                              </div>
+                            )}
+                            {review.user_id === user?.id && (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => deleteReview(review.id)}
+                                className="h-8 w-8 text-destructive hover:text-destructive"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                        <p className="text-foreground">{review.comment}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
           )}
-        </DialogContent>
-      </Dialog>
+        </div>
+      </main>
     </div>
   );
 };
