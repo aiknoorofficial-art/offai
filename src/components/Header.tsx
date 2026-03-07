@@ -54,6 +54,7 @@ export const Header = ({ user }: HeaderProps) => {
               Courses
             </Button>
           </Link>
+          {!mobile && user && <NotificationBell userId={user.id} />}
           <Link to="/profile" onClick={closeMenu}>
             <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start gap-2" : ""}>
               <UserIcon className="w-4 h-4" />
