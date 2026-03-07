@@ -118,6 +118,7 @@ export const Header = ({ user }: HeaderProps) => {
             </div>
           </SheetContent>
         </Sheet>
+        </div>
       </div>
     </header>
   );
