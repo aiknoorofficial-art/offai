@@ -6,6 +6,7 @@ import { User } from "@supabase/supabase-js";
 import { LogOut, Zap, User as UserIcon, Menu, X } from "lucide-react";
 import { TransactionModal } from "./TransactionModal";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { NotificationBell } from "./NotificationBell";
 
 interface HeaderProps {
   user: User | null;
