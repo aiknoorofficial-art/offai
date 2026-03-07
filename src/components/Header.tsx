@@ -6,6 +6,7 @@ import { User } from "@supabase/supabase-js";
 import { LogOut, Zap, User as UserIcon, Menu, X } from "lucide-react";
 import { TransactionModal } from "./TransactionModal";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { NotificationBell } from "./NotificationBell";
 
 interface HeaderProps {
   user: User | null;
@@ -53,6 +54,7 @@ export const Header = ({ user }: HeaderProps) => {
               Courses
             </Button>
           </Link>
+          {!mobile && user && <NotificationBell userId={user.id} />}
           <Link to="/profile" onClick={closeMenu}>
             <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start gap-2" : ""}>
               <UserIcon className="w-4 h-4" />
@@ -102,18 +104,21 @@ export const Header = ({ user }: HeaderProps) => {
         </nav>
 
         {/* Mobile Navigation */}
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger asChild className="md:hidden">
-            <Button variant="ghost" size="icon">
-              <Menu className="w-6 h-6" />
-            </Button>
-          </SheetTrigger>
+        <div className="flex items-center gap-1 md:hidden">
+          {user && <NotificationBell userId={user.id} />}
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu className="w-6 h-6" />
+              </Button>
+            </SheetTrigger>
           <SheetContent side="right" className="w-[280px] sm:w-[320px]">
             <div className="flex flex-col gap-2 mt-8">
               <NavLinks mobile />
             </div>
           </SheetContent>
         </Sheet>
+        </div>
       </div>
     </header>
   );
