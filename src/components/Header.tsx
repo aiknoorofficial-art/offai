@@ -104,12 +104,14 @@ export const Header = ({ user }: HeaderProps) => {
         </nav>
 
         {/* Mobile Navigation */}
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger asChild className="md:hidden">
-            <Button variant="ghost" size="icon">
-              <Menu className="w-6 h-6" />
-            </Button>
-          </SheetTrigger>
+        <div className="flex items-center gap-1 md:hidden">
+          {user && <NotificationBell userId={user.id} />}
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu className="w-6 h-6" />
+              </Button>
+            </SheetTrigger>
           <SheetContent side="right" className="w-[280px] sm:w-[320px]">
             <div className="flex flex-col gap-2 mt-8">
               <NavLinks mobile />
