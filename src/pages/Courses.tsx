@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
 import { User } from "@supabase/supabase-js";
@@ -52,6 +52,7 @@ interface Review {
 
 const Courses = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [user, setUser] = useState<User | null>(null);
   const [courses, setCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -93,7 +94,18 @@ const Courses = () => {
       if (!session?.user) {
         navigate("/auth");
       } else {
-        fetchCourses();
+        fetchCourses().then(() => {
+          const openCourseId = searchParams.get("open");
+          if (openCourseId) {
+            // Auto-open course from notification link
+            supabase.from("courses").select("*").eq("id", openCourseId).single().then(({ data }) => {
+              if (data) {
+                openCourseDetail(data as Course);
+                setSearchParams({}, { replace: true });
+              }
+            });
+          }
+        });
       }
     });
 
