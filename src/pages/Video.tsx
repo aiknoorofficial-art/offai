@@ -23,7 +23,7 @@ const Video = () => {
   const [statusMessage, setStatusMessage] = useState("");
   const [duration, setDuration] = useState("5");
   const [aspectRatio, setAspectRatio] = useState("16:9");
-  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const pollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
