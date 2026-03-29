@@ -6,22 +6,53 @@ import { Footer } from "@/components/Footer";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { Button } from "@/components/ui/button";
 import { User } from "@supabase/supabase-js";
-import { Zap, Code, Sparkles, Terminal, ArrowRight, Video, MessageSquare, Shield, Globe, Cpu, Users } from "lucide-react";
+import { Zap, Code, Sparkles, Terminal, ArrowRight, Video, MessageSquare, Shield, Globe, Cpu, Users, Wallet, TrendingUp, ShoppingCart, Clock } from "lucide-react";
 
 const Index = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [balance, setBalance] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [pendingOrders, setPendingOrders] = useState(0);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) fetchEarnings(session.user.id);
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.user) fetchEarnings(session.user.id);
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const fetchEarnings = async (userId: string) => {
+    const { data: orders } = await supabase
+      .from("course_orders")
+      .select("status, course_id")
+      .eq("seller_id", userId);
+
+    if (!orders) return;
+
+    const acceptedOrders = orders.filter((o) => o.status === "accepted");
+    const pending = orders.filter((o) => o.status === "pending").length;
+    setTotalOrders(orders.length);
+    setPendingOrders(pending);
+
+    if (acceptedOrders.length === 0) { setBalance(0); return; }
+
+    const courseIds = [...new Set(acceptedOrders.map((o) => o.course_id))];
+    const { data: courses } = await supabase
+      .from("courses")
+      .select("id, price")
+      .in("id", courseIds);
+
+    const priceMap = Object.fromEntries((courses || []).map((c) => [c.id, c.price]));
+    const total = acceptedOrders.reduce((sum, o) => sum + (priceMap[o.course_id] || 0), 0);
+    setBalance(total);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-dark flex flex-col">
@@ -72,6 +103,54 @@ const Index = () => {
           </AnimatedSection>
         </div>
       </section>
+
+      {/* Earnings Dashboard - only for logged in users */}
+      {user && (
+        <section className="py-12 px-4 relative overflow-hidden">
+          <div className="container mx-auto relative z-10">
+            <AnimatedSection className="text-center mb-8">
+              <h2 className="text-2xl md:text-3xl font-bold mb-2">
+                <span className="gradient-text-multi">My Earnings</span>
+              </h2>
+              <p className="text-muted-foreground">Your course sales at a glance</p>
+            </AnimatedSection>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto">
+              <AnimatedSection animation="fade-up" delay={0}>
+                <div className="p-6 rounded-xl bg-card/80 backdrop-blur-sm border border-neon-green/20 hover:border-neon-green/50 transition-all duration-300 text-center">
+                  <div className="w-12 h-12 rounded-lg bg-neon-green/10 flex items-center justify-center text-neon-green mx-auto mb-3">
+                    <Wallet className="w-6 h-6" />
+                  </div>
+                  <div className="text-3xl font-bold text-neon-green text-glow-green mb-1">Rs. {balance.toLocaleString()}</div>
+                  <p className="text-muted-foreground text-sm">Total Balance</p>
+                </div>
+              </AnimatedSection>
+
+              <AnimatedSection animation="fade-up" delay={100}>
+                <div className="p-6 rounded-xl bg-card/80 backdrop-blur-sm border border-neon-cyan/20 hover:border-neon-cyan/50 transition-all duration-300 text-center">
+                  <div className="w-12 h-12 rounded-lg bg-neon-cyan/10 flex items-center justify-center text-neon-cyan mx-auto mb-3">
+                    <ShoppingCart className="w-6 h-6" />
+                  </div>
+                  <div className="text-3xl font-bold text-neon-cyan text-glow-cyan mb-1">{totalOrders}</div>
+                  <p className="text-muted-foreground text-sm">Total Orders</p>
+                </div>
+              </AnimatedSection>
+
+              <AnimatedSection animation="fade-up" delay={200}>
+                <Link to="/orders" className="block">
+                  <div className="p-6 rounded-xl bg-card/80 backdrop-blur-sm border border-neon-yellow/20 hover:border-neon-yellow/50 transition-all duration-300 text-center cursor-pointer">
+                    <div className="w-12 h-12 rounded-lg bg-neon-yellow/10 flex items-center justify-center text-neon-yellow mx-auto mb-3">
+                      <Clock className="w-6 h-6" />
+                    </div>
+                    <div className="text-3xl font-bold text-neon-yellow text-glow mb-1">{pendingOrders}</div>
+                    <p className="text-muted-foreground text-sm">Pending Orders</p>
+                  </div>
+                </Link>
+              </AnimatedSection>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Products Section */}
       <section className="py-20 px-4 relative overflow-hidden">
