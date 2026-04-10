@@ -6,7 +6,8 @@ import { User } from "@supabase/supabase-js";
 import { toast } from "sonner";
 import { 
   BookOpen, Upload, Plus, Trash2, DollarSign, Image, 
-  CreditCard, User as UserIcon, Star, MessageCircle, Send, ShoppingCart, Package
+  CreditCard, User as UserIcon, Star, MessageCircle, Send, ShoppingCart, Package,
+  Wallet, Clock, Banknote
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -23,6 +25,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { toast as hookToast } from "@/hooks/use-toast";
 
 interface Course {
   id: string;
@@ -81,6 +84,18 @@ const Courses = () => {
   const [submittingOrder, setSubmittingOrder] = useState(false);
   const [showOrderForm, setShowOrderForm] = useState(false);
 
+  // Earnings states
+  const [balance, setBalance] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [pendingOrders, setPendingOrders] = useState(0);
+  const [totalWithdrawn, setTotalWithdrawn] = useState(0);
+  const [withdrawOpen, setWithdrawOpen] = useState(false);
+  const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [withdrawMethod, setWithdrawMethod] = useState("");
+  const [withdrawAccount, setWithdrawAccount] = useState("");
+  const [withdrawName, setWithdrawName] = useState("");
+  const [withdrawLoading, setWithdrawLoading] = useState(false);
+
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
@@ -106,11 +121,62 @@ const Courses = () => {
             });
           }
         });
+        fetchEarnings(session.user.id);
+        fetchWithdrawn(session.user.id);
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const fetchEarnings = async (userId: string) => {
+    const { data: orders } = await supabase
+      .from("course_orders")
+      .select("status, course_id")
+      .eq("seller_id", userId);
+    if (!orders) return;
+    const acceptedOrders = orders.filter((o) => o.status === "accepted");
+    setPendingOrders(orders.filter((o) => o.status === "pending").length);
+    setTotalOrders(orders.length);
+    if (acceptedOrders.length === 0) { setBalance(0); return; }
+    const courseIds = [...new Set(acceptedOrders.map((o) => o.course_id))];
+    const { data: courses } = await supabase.from("courses").select("id, price").in("id", courseIds);
+    const priceMap = Object.fromEntries((courses || []).map((c) => [c.id, c.price]));
+    setBalance(acceptedOrders.reduce((sum, o) => sum + (priceMap[o.course_id] || 0), 0));
+  };
+
+  const fetchWithdrawn = async (userId: string) => {
+    const { data } = await supabase.from("withdrawals").select("amount, status").eq("user_id", userId);
+    if (data) {
+      setTotalWithdrawn(data.filter(w => w.status === "approved" || w.status === "pending").reduce((sum, w) => sum + Number(w.amount), 0));
+    }
+  };
+
+  const handleWithdraw = async () => {
+    if (!user) return;
+    const amount = Number(withdrawAmount);
+    const available = balance - totalWithdrawn;
+    if (!amount || amount <= 0 || amount > available) {
+      hookToast({ title: "Invalid amount", description: `Max: Rs. ${available.toLocaleString()}`, variant: "destructive" });
+      return;
+    }
+    if (!withdrawMethod || !withdrawAccount || !withdrawName) {
+      hookToast({ title: "Fill all fields", variant: "destructive" });
+      return;
+    }
+    setWithdrawLoading(true);
+    const { error } = await supabase.from("withdrawals").insert({
+      user_id: user.id, amount, method: withdrawMethod,
+      account_number: withdrawAccount, account_name: withdrawName,
+    });
+    setWithdrawLoading(false);
+    if (error) { hookToast({ title: "Error", description: error.message, variant: "destructive" }); }
+    else {
+      hookToast({ title: "Withdrawal Requested!", description: `Rs. ${amount.toLocaleString()} via ${withdrawMethod}` });
+      setWithdrawOpen(false); setWithdrawAmount(""); setWithdrawMethod(""); setWithdrawAccount(""); setWithdrawName("");
+      fetchWithdrawn(user.id);
+    }
+  };
 
   const fetchCourses = async () => {
     setIsLoading(true);
@@ -545,6 +611,73 @@ const Courses = () => {
               </DialogContent>
             </Dialog>
           </div>
+
+          {/* Earnings Dashboard */}
+          {user && (
+            <div className="mb-8 p-6 rounded-xl bg-card/80 backdrop-blur-sm border border-neon-green/20">
+              <h2 className="text-xl font-bold gradient-text-multi mb-4">My Earnings</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="text-center p-4 rounded-lg bg-neon-green/5 border border-neon-green/10">
+                  <Wallet className="w-6 h-6 text-neon-green mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-neon-green">Rs. {(balance - totalWithdrawn).toLocaleString()}</div>
+                  <p className="text-muted-foreground text-xs mt-1">Available</p>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-neon-cyan/5 border border-neon-cyan/10">
+                  <ShoppingCart className="w-6 h-6 text-neon-cyan mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-neon-cyan">{totalOrders}</div>
+                  <p className="text-muted-foreground text-xs mt-1">Total Orders</p>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-neon-yellow/5 border border-neon-yellow/10">
+                  <Clock className="w-6 h-6 text-neon-yellow mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-neon-yellow">{pendingOrders}</div>
+                  <p className="text-muted-foreground text-xs mt-1">Pending</p>
+                </div>
+                <div className="flex items-center justify-center">
+                  <Dialog open={withdrawOpen} onOpenChange={setWithdrawOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm" className="border-neon-orange/50 text-neon-orange hover:bg-neon-orange/10 gap-2">
+                        <Banknote className="w-4 h-4" />
+                        Withdraw
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="bg-card border-border">
+                      <DialogHeader>
+                        <DialogTitle className="gradient-text-multi text-xl">Withdraw Funds</DialogTitle>
+                      </DialogHeader>
+                      <p className="text-muted-foreground text-sm">Available: <span className="text-neon-green font-bold">Rs. {(balance - totalWithdrawn).toLocaleString()}</span></p>
+                      <div className="space-y-4 mt-2">
+                        <div>
+                          <Label>Amount (PKR)</Label>
+                          <Input type="number" placeholder="Enter amount" value={withdrawAmount} onChange={(e) => setWithdrawAmount(e.target.value)} />
+                        </div>
+                        <div>
+                          <Label>Payment Method</Label>
+                          <Select value={withdrawMethod} onValueChange={setWithdrawMethod}>
+                            <SelectTrigger><SelectValue placeholder="Select method" /></SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Easypaisa">Easypaisa</SelectItem>
+                              <SelectItem value="JazzCash">JazzCash</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label>Account Number</Label>
+                          <Input placeholder="03XXXXXXXXX" value={withdrawAccount} onChange={(e) => setWithdrawAccount(e.target.value)} />
+                        </div>
+                        <div>
+                          <Label>Account Holder Name</Label>
+                          <Input placeholder="Full name" value={withdrawName} onChange={(e) => setWithdrawName(e.target.value)} />
+                        </div>
+                        <Button onClick={handleWithdraw} disabled={withdrawLoading} className="w-full bg-gradient-to-r from-neon-orange to-neon-yellow text-background">
+                          {withdrawLoading ? "Submitting..." : "Submit Withdrawal Request"}
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
+            </div>
+          )}
 
           {isLoading ? (
             <div className="text-center py-16">
