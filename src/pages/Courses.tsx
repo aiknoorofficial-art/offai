@@ -84,6 +84,18 @@ const Courses = () => {
   const [submittingOrder, setSubmittingOrder] = useState(false);
   const [showOrderForm, setShowOrderForm] = useState(false);
 
+  // Earnings states
+  const [balance, setBalance] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [pendingOrders, setPendingOrders] = useState(0);
+  const [totalWithdrawn, setTotalWithdrawn] = useState(0);
+  const [withdrawOpen, setWithdrawOpen] = useState(false);
+  const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [withdrawMethod, setWithdrawMethod] = useState("");
+  const [withdrawAccount, setWithdrawAccount] = useState("");
+  const [withdrawName, setWithdrawName] = useState("");
+  const [withdrawLoading, setWithdrawLoading] = useState(false);
+
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
