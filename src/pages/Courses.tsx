@@ -178,7 +178,7 @@ const Courses = () => {
     }
   };
 
-
+  const fetchCourses = async () => {
     setIsLoading(true);
     const { data, error } = await supabase
       .from("courses")
