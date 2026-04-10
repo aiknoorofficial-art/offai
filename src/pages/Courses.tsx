@@ -6,7 +6,8 @@ import { User } from "@supabase/supabase-js";
 import { toast } from "sonner";
 import { 
   BookOpen, Upload, Plus, Trash2, DollarSign, Image, 
-  CreditCard, User as UserIcon, Star, MessageCircle, Send, ShoppingCart, Package
+  CreditCard, User as UserIcon, Star, MessageCircle, Send, ShoppingCart, Package,
+  Wallet, Clock, Banknote
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
