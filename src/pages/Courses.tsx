@@ -123,6 +123,7 @@ const Courses = () => {
         });
         fetchEarnings(session.user.id);
         fetchWithdrawn(session.user.id);
+      }
     });
 
     return () => subscription.unsubscribe();
