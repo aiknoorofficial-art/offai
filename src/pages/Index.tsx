@@ -181,8 +181,8 @@ const Index = () => {
                   <div className="w-12 h-12 rounded-lg bg-neon-green/10 flex items-center justify-center text-neon-green mx-auto mb-3">
                     <Wallet className="w-6 h-6" />
                   </div>
-                  <div className="text-3xl font-bold text-neon-green text-glow-green mb-1">Rs. {balance.toLocaleString()}</div>
-                  <p className="text-muted-foreground text-sm">Total Balance</p>
+                  <div className="text-3xl font-bold text-neon-green text-glow-green mb-1">Rs. {(balance - totalWithdrawn).toLocaleString()}</div>
+                  <p className="text-muted-foreground text-sm">Available Balance</p>
                 </div>
               </AnimatedSection>
 
@@ -207,6 +207,51 @@ const Index = () => {
                   </div>
                 </Link>
               </AnimatedSection>
+            </div>
+
+            {/* Withdraw Button */}
+            <div className="flex justify-center mt-6">
+              <Dialog open={withdrawOpen} onOpenChange={setWithdrawOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="border-neon-orange/50 text-neon-orange hover:bg-neon-orange/10 gap-2">
+                    <Banknote className="w-5 h-5" />
+                    Withdraw Funds
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-card border-border">
+                  <DialogHeader>
+                    <DialogTitle className="gradient-text-multi text-xl">Withdraw Funds</DialogTitle>
+                  </DialogHeader>
+                  <p className="text-muted-foreground text-sm">Available: <span className="text-neon-green font-bold">Rs. {(balance - totalWithdrawn).toLocaleString()}</span></p>
+                  <div className="space-y-4 mt-2">
+                    <div>
+                      <Label>Amount (PKR)</Label>
+                      <Input type="number" placeholder="Enter amount" value={withdrawAmount} onChange={(e) => setWithdrawAmount(e.target.value)} />
+                    </div>
+                    <div>
+                      <Label>Payment Method</Label>
+                      <Select value={withdrawMethod} onValueChange={setWithdrawMethod}>
+                        <SelectTrigger><SelectValue placeholder="Select method" /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Easypaisa">Easypaisa</SelectItem>
+                          <SelectItem value="JazzCash">JazzCash</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Account Number</Label>
+                      <Input placeholder="03XXXXXXXXX" value={withdrawAccount} onChange={(e) => setWithdrawAccount(e.target.value)} />
+                    </div>
+                    <div>
+                      <Label>Account Holder Name</Label>
+                      <Input placeholder="Full name" value={withdrawName} onChange={(e) => setWithdrawName(e.target.value)} />
+                    </div>
+                    <Button onClick={handleWithdraw} disabled={withdrawLoading} className="w-full bg-gradient-to-r from-neon-orange to-neon-yellow text-background">
+                      {withdrawLoading ? "Submitting..." : "Submit Withdrawal Request"}
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </section>
