@@ -129,7 +129,56 @@ const Courses = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  const fetchCourses = async () => {
+  const fetchEarnings = async (userId: string) => {
+    const { data: orders } = await supabase
+      .from("course_orders")
+      .select("status, course_id")
+      .eq("seller_id", userId);
+    if (!orders) return;
+    const acceptedOrders = orders.filter((o) => o.status === "accepted");
+    setPendingOrders(orders.filter((o) => o.status === "pending").length);
+    setTotalOrders(orders.length);
+    if (acceptedOrders.length === 0) { setBalance(0); return; }
+    const courseIds = [...new Set(acceptedOrders.map((o) => o.course_id))];
+    const { data: courses } = await supabase.from("courses").select("id, price").in("id", courseIds);
+    const priceMap = Object.fromEntries((courses || []).map((c) => [c.id, c.price]));
+    setBalance(acceptedOrders.reduce((sum, o) => sum + (priceMap[o.course_id] || 0), 0));
+  };
+
+  const fetchWithdrawn = async (userId: string) => {
+    const { data } = await supabase.from("withdrawals").select("amount, status").eq("user_id", userId);
+    if (data) {
+      setTotalWithdrawn(data.filter(w => w.status === "approved" || w.status === "pending").reduce((sum, w) => sum + Number(w.amount), 0));
+    }
+  };
+
+  const handleWithdraw = async () => {
+    if (!user) return;
+    const amount = Number(withdrawAmount);
+    const available = balance - totalWithdrawn;
+    if (!amount || amount <= 0 || amount > available) {
+      hookToast({ title: "Invalid amount", description: `Max: Rs. ${available.toLocaleString()}`, variant: "destructive" });
+      return;
+    }
+    if (!withdrawMethod || !withdrawAccount || !withdrawName) {
+      hookToast({ title: "Fill all fields", variant: "destructive" });
+      return;
+    }
+    setWithdrawLoading(true);
+    const { error } = await supabase.from("withdrawals").insert({
+      user_id: user.id, amount, method: withdrawMethod,
+      account_number: withdrawAccount, account_name: withdrawName,
+    });
+    setWithdrawLoading(false);
+    if (error) { hookToast({ title: "Error", description: error.message, variant: "destructive" }); }
+    else {
+      hookToast({ title: "Withdrawal Requested!", description: `Rs. ${amount.toLocaleString()} via ${withdrawMethod}` });
+      setWithdrawOpen(false); setWithdrawAmount(""); setWithdrawMethod(""); setWithdrawAccount(""); setWithdrawName("");
+      fetchWithdrawn(user.id);
+    }
+  };
+
+
     setIsLoading(true);
     const { data, error } = await supabase
       .from("courses")
