@@ -5,14 +5,26 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { User } from "@supabase/supabase-js";
-import { Zap, Code, Sparkles, Terminal, ArrowRight, Video, MessageSquare, Shield, Globe, Cpu, Users, Wallet, TrendingUp, ShoppingCart, Clock } from "lucide-react";
+import { Zap, Code, Sparkles, Terminal, ArrowRight, Video, MessageSquare, Shield, Globe, Cpu, Users, Wallet, TrendingUp, ShoppingCart, Clock, Banknote } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [user, setUser] = useState<User | null>(null);
   const [balance, setBalance] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);
   const [pendingOrders, setPendingOrders] = useState(0);
+  const [withdrawOpen, setWithdrawOpen] = useState(false);
+  const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [withdrawMethod, setWithdrawMethod] = useState("");
+  const [withdrawAccount, setWithdrawAccount] = useState("");
+  const [withdrawName, setWithdrawName] = useState("");
+  const [withdrawLoading, setWithdrawLoading] = useState(false);
+  const [totalWithdrawn, setTotalWithdrawn] = useState(0);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -22,11 +34,25 @@ const Index = () => {
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
-      if (session?.user) fetchEarnings(session.user.id);
+      if (session?.user) {
+        fetchEarnings(session.user.id);
+        fetchWithdrawn(session.user.id);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const fetchWithdrawn = async (userId: string) => {
+    const { data } = await supabase
+      .from("withdrawals")
+      .select("amount, status")
+      .eq("user_id", userId);
+    if (data) {
+      const approved = data.filter(w => w.status === "approved" || w.status === "pending");
+      setTotalWithdrawn(approved.reduce((sum, w) => sum + Number(w.amount), 0));
+    }
+  };
 
   const fetchEarnings = async (userId: string) => {
     const { data: orders } = await supabase
@@ -52,6 +78,40 @@ const Index = () => {
     const priceMap = Object.fromEntries((courses || []).map((c) => [c.id, c.price]));
     const total = acceptedOrders.reduce((sum, o) => sum + (priceMap[o.course_id] || 0), 0);
     setBalance(total);
+  };
+
+  const handleWithdraw = async () => {
+    if (!user) return;
+    const amount = Number(withdrawAmount);
+    const available = balance - totalWithdrawn;
+    if (!amount || amount <= 0 || amount > available) {
+      toast({ title: "Invalid amount", description: `You can withdraw up to Rs. ${available.toLocaleString()}`, variant: "destructive" });
+      return;
+    }
+    if (!withdrawMethod || !withdrawAccount || !withdrawName) {
+      toast({ title: "Fill all fields", variant: "destructive" });
+      return;
+    }
+    setWithdrawLoading(true);
+    const { error } = await supabase.from("withdrawals").insert({
+      user_id: user.id,
+      amount,
+      method: withdrawMethod,
+      account_number: withdrawAccount,
+      account_name: withdrawName,
+    });
+    setWithdrawLoading(false);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Withdrawal Requested!", description: `Rs. ${amount.toLocaleString()} via ${withdrawMethod}` });
+      setWithdrawOpen(false);
+      setWithdrawAmount("");
+      setWithdrawMethod("");
+      setWithdrawAccount("");
+      setWithdrawName("");
+      fetchWithdrawn(user.id);
+    }
   };
 
   return (
@@ -121,8 +181,8 @@ const Index = () => {
                   <div className="w-12 h-12 rounded-lg bg-neon-green/10 flex items-center justify-center text-neon-green mx-auto mb-3">
                     <Wallet className="w-6 h-6" />
                   </div>
-                  <div className="text-3xl font-bold text-neon-green text-glow-green mb-1">Rs. {balance.toLocaleString()}</div>
-                  <p className="text-muted-foreground text-sm">Total Balance</p>
+                  <div className="text-3xl font-bold text-neon-green text-glow-green mb-1">Rs. {(balance - totalWithdrawn).toLocaleString()}</div>
+                  <p className="text-muted-foreground text-sm">Available Balance</p>
                 </div>
               </AnimatedSection>
 
@@ -147,6 +207,51 @@ const Index = () => {
                   </div>
                 </Link>
               </AnimatedSection>
+            </div>
+
+            {/* Withdraw Button */}
+            <div className="flex justify-center mt-6">
+              <Dialog open={withdrawOpen} onOpenChange={setWithdrawOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="border-neon-orange/50 text-neon-orange hover:bg-neon-orange/10 gap-2">
+                    <Banknote className="w-5 h-5" />
+                    Withdraw Funds
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-card border-border">
+                  <DialogHeader>
+                    <DialogTitle className="gradient-text-multi text-xl">Withdraw Funds</DialogTitle>
+                  </DialogHeader>
+                  <p className="text-muted-foreground text-sm">Available: <span className="text-neon-green font-bold">Rs. {(balance - totalWithdrawn).toLocaleString()}</span></p>
+                  <div className="space-y-4 mt-2">
+                    <div>
+                      <Label>Amount (PKR)</Label>
+                      <Input type="number" placeholder="Enter amount" value={withdrawAmount} onChange={(e) => setWithdrawAmount(e.target.value)} />
+                    </div>
+                    <div>
+                      <Label>Payment Method</Label>
+                      <Select value={withdrawMethod} onValueChange={setWithdrawMethod}>
+                        <SelectTrigger><SelectValue placeholder="Select method" /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Easypaisa">Easypaisa</SelectItem>
+                          <SelectItem value="JazzCash">JazzCash</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Account Number</Label>
+                      <Input placeholder="03XXXXXXXXX" value={withdrawAccount} onChange={(e) => setWithdrawAccount(e.target.value)} />
+                    </div>
+                    <div>
+                      <Label>Account Holder Name</Label>
+                      <Input placeholder="Full name" value={withdrawName} onChange={(e) => setWithdrawName(e.target.value)} />
+                    </div>
+                    <Button onClick={handleWithdraw} disabled={withdrawLoading} className="w-full bg-gradient-to-r from-neon-orange to-neon-yellow text-background">
+                      {withdrawLoading ? "Submitting..." : "Submit Withdrawal Request"}
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </section>
