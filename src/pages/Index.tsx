@@ -5,14 +5,26 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { User } from "@supabase/supabase-js";
-import { Zap, Code, Sparkles, Terminal, ArrowRight, Video, MessageSquare, Shield, Globe, Cpu, Users, Wallet, TrendingUp, ShoppingCart, Clock } from "lucide-react";
+import { Zap, Code, Sparkles, Terminal, ArrowRight, Video, MessageSquare, Shield, Globe, Cpu, Users, Wallet, TrendingUp, ShoppingCart, Clock, Banknote } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [user, setUser] = useState<User | null>(null);
   const [balance, setBalance] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);
   const [pendingOrders, setPendingOrders] = useState(0);
+  const [withdrawOpen, setWithdrawOpen] = useState(false);
+  const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [withdrawMethod, setWithdrawMethod] = useState("");
+  const [withdrawAccount, setWithdrawAccount] = useState("");
+  const [withdrawName, setWithdrawName] = useState("");
+  const [withdrawLoading, setWithdrawLoading] = useState(false);
+  const [totalWithdrawn, setTotalWithdrawn] = useState(0);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
