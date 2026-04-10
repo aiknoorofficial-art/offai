@@ -34,11 +34,25 @@ const Index = () => {
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
-      if (session?.user) fetchEarnings(session.user.id);
+      if (session?.user) {
+        fetchEarnings(session.user.id);
+        fetchWithdrawn(session.user.id);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const fetchWithdrawn = async (userId: string) => {
+    const { data } = await supabase
+      .from("withdrawals")
+      .select("amount, status")
+      .eq("user_id", userId);
+    if (data) {
+      const approved = data.filter(w => w.status === "approved" || w.status === "pending");
+      setTotalWithdrawn(approved.reduce((sum, w) => sum + Number(w.amount), 0));
+    }
+  };
 
   const fetchEarnings = async (userId: string) => {
     const { data: orders } = await supabase
@@ -64,6 +78,40 @@ const Index = () => {
     const priceMap = Object.fromEntries((courses || []).map((c) => [c.id, c.price]));
     const total = acceptedOrders.reduce((sum, o) => sum + (priceMap[o.course_id] || 0), 0);
     setBalance(total);
+  };
+
+  const handleWithdraw = async () => {
+    if (!user) return;
+    const amount = Number(withdrawAmount);
+    const available = balance - totalWithdrawn;
+    if (!amount || amount <= 0 || amount > available) {
+      toast({ title: "Invalid amount", description: `You can withdraw up to Rs. ${available.toLocaleString()}`, variant: "destructive" });
+      return;
+    }
+    if (!withdrawMethod || !withdrawAccount || !withdrawName) {
+      toast({ title: "Fill all fields", variant: "destructive" });
+      return;
+    }
+    setWithdrawLoading(true);
+    const { error } = await supabase.from("withdrawals").insert({
+      user_id: user.id,
+      amount,
+      method: withdrawMethod,
+      account_number: withdrawAccount,
+      account_name: withdrawName,
+    });
+    setWithdrawLoading(false);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Withdrawal Requested!", description: `Rs. ${amount.toLocaleString()} via ${withdrawMethod}` });
+      setWithdrawOpen(false);
+      setWithdrawAmount("");
+      setWithdrawMethod("");
+      setWithdrawAccount("");
+      setWithdrawName("");
+      fetchWithdrawn(user.id);
+    }
   };
 
   return (
