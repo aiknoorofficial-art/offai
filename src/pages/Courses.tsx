@@ -95,6 +95,7 @@ const Courses = () => {
   const [withdrawAccount, setWithdrawAccount] = useState("");
   const [withdrawName, setWithdrawName] = useState("");
   const [withdrawLoading, setWithdrawLoading] = useState(false);
+  const [withdrawals, setWithdrawals] = useState<any[]>([]);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -146,8 +147,9 @@ const Courses = () => {
   };
 
   const fetchWithdrawn = async (userId: string) => {
-    const { data } = await supabase.from("withdrawals").select("amount, status").eq("user_id", userId);
+    const { data } = await supabase.from("withdrawals").select("*").eq("user_id", userId).order("created_at", { ascending: false });
     if (data) {
+      setWithdrawals(data);
       setTotalWithdrawn(data.filter(w => w.status === "approved" || w.status === "pending").reduce((sum, w) => sum + Number(w.amount), 0));
     }
   };
@@ -676,6 +678,35 @@ const Courses = () => {
                   </Dialog>
                 </div>
               </div>
+
+              {/* Withdrawal History */}
+              {withdrawals.length > 0 && (
+                <div className="mt-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-3">Withdrawal History</h3>
+                  <div className="space-y-3">
+                    {withdrawals.map((w) => (
+                      <div key={w.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-lg bg-background/50 border border-border gap-2">
+                        <div className="flex items-center gap-3">
+                          <Banknote className="w-5 h-5 text-neon-orange" />
+                          <div>
+                            <p className="font-medium text-sm">Rs. {Number(w.amount).toLocaleString()} — {w.method}</p>
+                            <p className="text-xs text-muted-foreground">{w.account_name} • {w.account_number}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge
+                            variant={w.status === "approved" ? "default" : w.status === "rejected" ? "destructive" : "secondary"}
+                            className={w.status === "approved" ? "bg-neon-green/20 text-neon-green border-neon-green/30" : ""}
+                          >
+                            {w.status.charAt(0).toUpperCase() + w.status.slice(1)}
+                          </Badge>
+                          <span className="text-xs text-muted-foreground">{new Date(w.created_at).toLocaleDateString()}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
