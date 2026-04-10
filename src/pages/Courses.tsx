@@ -612,6 +612,73 @@ const Courses = () => {
             </Dialog>
           </div>
 
+          {/* Earnings Dashboard */}
+          {user && (
+            <div className="mb-8 p-6 rounded-xl bg-card/80 backdrop-blur-sm border border-neon-green/20">
+              <h2 className="text-xl font-bold gradient-text-multi mb-4">My Earnings</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="text-center p-4 rounded-lg bg-neon-green/5 border border-neon-green/10">
+                  <Wallet className="w-6 h-6 text-neon-green mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-neon-green">Rs. {(balance - totalWithdrawn).toLocaleString()}</div>
+                  <p className="text-muted-foreground text-xs mt-1">Available</p>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-neon-cyan/5 border border-neon-cyan/10">
+                  <ShoppingCart className="w-6 h-6 text-neon-cyan mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-neon-cyan">{totalOrders}</div>
+                  <p className="text-muted-foreground text-xs mt-1">Total Orders</p>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-neon-yellow/5 border border-neon-yellow/10">
+                  <Clock className="w-6 h-6 text-neon-yellow mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-neon-yellow">{pendingOrders}</div>
+                  <p className="text-muted-foreground text-xs mt-1">Pending</p>
+                </div>
+                <div className="flex items-center justify-center">
+                  <Dialog open={withdrawOpen} onOpenChange={setWithdrawOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm" className="border-neon-orange/50 text-neon-orange hover:bg-neon-orange/10 gap-2">
+                        <Banknote className="w-4 h-4" />
+                        Withdraw
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="bg-card border-border">
+                      <DialogHeader>
+                        <DialogTitle className="gradient-text-multi text-xl">Withdraw Funds</DialogTitle>
+                      </DialogHeader>
+                      <p className="text-muted-foreground text-sm">Available: <span className="text-neon-green font-bold">Rs. {(balance - totalWithdrawn).toLocaleString()}</span></p>
+                      <div className="space-y-4 mt-2">
+                        <div>
+                          <Label>Amount (PKR)</Label>
+                          <Input type="number" placeholder="Enter amount" value={withdrawAmount} onChange={(e) => setWithdrawAmount(e.target.value)} />
+                        </div>
+                        <div>
+                          <Label>Payment Method</Label>
+                          <Select value={withdrawMethod} onValueChange={setWithdrawMethod}>
+                            <SelectTrigger><SelectValue placeholder="Select method" /></SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Easypaisa">Easypaisa</SelectItem>
+                              <SelectItem value="JazzCash">JazzCash</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label>Account Number</Label>
+                          <Input placeholder="03XXXXXXXXX" value={withdrawAccount} onChange={(e) => setWithdrawAccount(e.target.value)} />
+                        </div>
+                        <div>
+                          <Label>Account Holder Name</Label>
+                          <Input placeholder="Full name" value={withdrawName} onChange={(e) => setWithdrawName(e.target.value)} />
+                        </div>
+                        <Button onClick={handleWithdraw} disabled={withdrawLoading} className="w-full bg-gradient-to-r from-neon-orange to-neon-yellow text-background">
+                          {withdrawLoading ? "Submitting..." : "Submit Withdrawal Request"}
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
+            </div>
+          )}
+
           {isLoading ? (
             <div className="text-center py-16">
               <p className="text-muted-foreground">Loading courses...</p>
