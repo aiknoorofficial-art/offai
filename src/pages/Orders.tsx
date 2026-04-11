@@ -173,12 +173,67 @@ const Orders = () => {
                       </div>
                     </div>
 
-                    <div className="bg-muted/30 rounded-lg p-3">
-                      <div className="flex items-start gap-2">
-                        <MessageSquare className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
-                        <p className="text-sm text-foreground">{order.message}</p>
-                      </div>
-                    </div>
+                    {(() => {
+                      const lines = order.message.split("\n");
+                      const parsed: Record<string, string> = {};
+                      let extraMsg = "";
+                      lines.forEach((line) => {
+                        const match = line.match(/^(TID|Sender Name|Sender Number|Course|Message):\s*(.+)$/i);
+                        if (match) {
+                          parsed[match[1]] = match[2];
+                        } else if (line.trim()) {
+                          extraMsg += line + " ";
+                        }
+                      });
+
+                      const hasStructured = Object.keys(parsed).length > 0;
+
+                      return hasStructured ? (
+                        <div className="bg-muted/30 rounded-lg p-4 space-y-2">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                            {parsed["TID"] && (
+                              <div>
+                                <span className="text-muted-foreground text-xs">Transaction ID</span>
+                                <p className="font-mono font-medium text-foreground">{parsed["TID"]}</p>
+                              </div>
+                            )}
+                            {parsed["Sender Name"] && (
+                              <div>
+                                <span className="text-muted-foreground text-xs">Sender Name</span>
+                                <p className="font-medium text-foreground">{parsed["Sender Name"]}</p>
+                              </div>
+                            )}
+                            {parsed["Sender Number"] && (
+                              <div>
+                                <span className="text-muted-foreground text-xs">Sender Number</span>
+                                <p className="font-mono font-medium text-foreground">{parsed["Sender Number"]}</p>
+                              </div>
+                            )}
+                            {parsed["Course"] && (
+                              <div>
+                                <span className="text-muted-foreground text-xs">Course</span>
+                                <p className="font-medium text-foreground">{parsed["Course"]}</p>
+                              </div>
+                            )}
+                          </div>
+                          {(parsed["Message"] || extraMsg.trim()) && (
+                            <div className="pt-2 border-t border-border/50">
+                              <div className="flex items-start gap-2">
+                                <MessageSquare className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
+                                <p className="text-sm text-foreground">{parsed["Message"] || extraMsg.trim()}</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="bg-muted/30 rounded-lg p-3">
+                          <div className="flex items-start gap-2">
+                            <MessageSquare className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
+                            <p className="text-sm text-foreground">{order.message}</p>
+                          </div>
+                        </div>
+                      );
+                    })()}
 
                     {order.status === "pending" && (
                       <div className="flex gap-3 pt-1">
