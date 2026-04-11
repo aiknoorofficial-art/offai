@@ -856,15 +856,53 @@ const Courses = () => {
                           </Button>
                         ) : (
                           <div className="space-y-3 p-4 rounded-lg bg-secondary/30 border border-neon-orange/30">
-                            <p className="text-sm text-muted-foreground">
-                              Send a message to the publisher to order this course:
+                            <p className="text-sm font-semibold text-foreground">
+                              Fill in your payment & order details:
                             </p>
-                            <Textarea
-                              placeholder="Hi, I'm interested in this course. Please share payment details..."
-                              value={orderMessage}
-                              onChange={(e) => setOrderMessage(e.target.value)}
-                              className="border-neon-cyan/30 min-h-[100px]"
-                            />
+                            <div className="space-y-2">
+                              <Label className="text-xs">Transaction ID (TID) *</Label>
+                              <Input
+                                placeholder="Enter transaction ID"
+                                value={orderTid}
+                                onChange={(e) => setOrderTid(e.target.value)}
+                                className="border-neon-cyan/30"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label className="text-xs">Sender Name *</Label>
+                              <Input
+                                placeholder="Your full name"
+                                value={orderSenderName}
+                                onChange={(e) => setOrderSenderName(e.target.value)}
+                                className="border-neon-cyan/30"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label className="text-xs">Sender Number *</Label>
+                              <Input
+                                placeholder="03XXXXXXXXX"
+                                value={orderSenderNumber}
+                                onChange={(e) => setOrderSenderNumber(e.target.value)}
+                                className="border-neon-cyan/30"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label className="text-xs">Course</Label>
+                              <Input
+                                value={selectedCourse.title}
+                                disabled
+                                className="border-border bg-muted/50"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label className="text-xs">Additional Message (optional)</Label>
+                              <Textarea
+                                placeholder="Any extra notes for the seller..."
+                                value={orderMessage}
+                                onChange={(e) => setOrderMessage(e.target.value)}
+                                className="border-neon-cyan/30 min-h-[60px]"
+                              />
+                            </div>
                             <div className="flex gap-2">
                               <Button
                                 onClick={submitOrder}
@@ -878,7 +916,7 @@ const Courses = () => {
                                 variant="outline"
                                 onClick={() => {
                                   setShowOrderForm(false);
-                                  setOrderMessage("");
+                                  setOrderMessage(""); setOrderTid(""); setOrderSenderName(""); setOrderSenderNumber("");
                                 }}
                               >
                                 Cancel
