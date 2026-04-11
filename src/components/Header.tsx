@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
-import { LogOut, Zap, User as UserIcon, Menu, X } from "lucide-react";
+import { LogOut, Zap, User as UserIcon, Menu, X, Shield } from "lucide-react";
 import { TransactionModal } from "./TransactionModal";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { NotificationBell } from "./NotificationBell";
@@ -15,6 +15,20 @@ interface HeaderProps {
 export const Header = ({ user }: HeaderProps) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin")
+        .then(({ data }) => setIsAdmin(!!(data && data.length > 0)));
+    } else {
+      setIsAdmin(false);
+    }
+  }, [user]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -59,6 +73,14 @@ export const Header = ({ user }: HeaderProps) => {
               Orders
             </Button>
           </Link>
+          {isAdmin && (
+            <Link to="/admin" onClick={closeMenu}>
+              <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start gap-2" : "gap-1"}>
+                <Shield className="w-4 h-4" />
+                {mobile ? "Admin" : ""}
+              </Button>
+            </Link>
+          )}
           {!mobile && user && <NotificationBell userId={user.id} />}
           <Link to="/profile" onClick={closeMenu}>
             <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start gap-2" : ""}>
