@@ -425,11 +425,13 @@ const Courses = () => {
   };
 
   const submitOrder = async () => {
-    if (!orderMessage.trim()) {
-      toast.error("Please enter a message for the seller");
+    if (!orderTid.trim() || !orderSenderName.trim() || !orderSenderNumber.trim()) {
+      toast.error("Please fill all required fields");
       return;
     }
     if (!selectedCourse || !user) return;
+
+    const fullMessage = `TID: ${orderTid.trim()}\nSender Name: ${orderSenderName.trim()}\nSender Number: ${orderSenderNumber.trim()}\nCourse: ${selectedCourse.title}${orderMessage.trim() ? `\nMessage: ${orderMessage.trim()}` : ""}`;
 
     setSubmittingOrder(true);
     try {
@@ -439,13 +441,13 @@ const Courses = () => {
           course_id: selectedCourse.id,
           buyer_id: user.id,
           seller_id: selectedCourse.user_id,
-          message: orderMessage.trim(),
+          message: fullMessage,
         });
 
       if (error) throw error;
 
       toast.success("Order sent to the publisher!");
-      setOrderMessage("");
+      setOrderMessage(""); setOrderTid(""); setOrderSenderName(""); setOrderSenderNumber("");
       setShowOrderForm(false);
     } catch (error: any) {
       toast.error(error.message || "Failed to send order");
