@@ -73,6 +73,14 @@ export const Header = ({ user }: HeaderProps) => {
               Orders
             </Button>
           </Link>
+          {isAdmin && (
+            <Link to="/admin" onClick={closeMenu}>
+              <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start gap-2" : "gap-1"}>
+                <Shield className="w-4 h-4" />
+                {mobile ? "Admin" : ""}
+              </Button>
+            </Link>
+          )}
           {!mobile && user && <NotificationBell userId={user.id} />}
           <Link to="/profile" onClick={closeMenu}>
             <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start gap-2" : ""}>
