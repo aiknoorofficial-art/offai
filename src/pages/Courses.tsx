@@ -81,6 +81,9 @@ const Courses = () => {
 
   // Order states
   const [orderMessage, setOrderMessage] = useState("");
+  const [orderTid, setOrderTid] = useState("");
+  const [orderSenderName, setOrderSenderName] = useState("");
+  const [orderSenderNumber, setOrderSenderNumber] = useState("");
   const [submittingOrder, setSubmittingOrder] = useState(false);
   const [showOrderForm, setShowOrderForm] = useState(false);
 
