@@ -71,6 +71,7 @@ const Courses = () => {
   const [price, setPrice] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [accountName, setAccountName] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
