@@ -88,6 +88,7 @@ const Courses = () => {
   const [orderSenderNumber, setOrderSenderNumber] = useState("");
   const [submittingOrder, setSubmittingOrder] = useState(false);
   const [showOrderForm, setShowOrderForm] = useState(false);
+  const [buyerOrderStatus, setBuyerOrderStatus] = useState<string | null>(null);
 
   // Earnings states
   const [balance, setBalance] = useState(0);
