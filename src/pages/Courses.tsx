@@ -873,10 +873,20 @@ const Courses = () => {
                       PKR {selectedCourse.price.toLocaleString()}
                     </div>
                     
-                    {/* Payment details only visible to course owner */}
-                    {isOwner && (selectedCourse.account_name || selectedCourse.account_number) && (
+                    {/* Payment details visible to everyone for payment */}
+                    {(selectedCourse.account_name || selectedCourse.account_number) && (
                       <div className="space-y-3 mb-4">
-                        <p className="text-muted-foreground font-semibold text-lg">Your Payment Details:</p>
+                        <p className="text-muted-foreground font-semibold text-lg">
+                          {isOwner ? "Your Payment Details:" : "Send Payment To:"}
+                        </p>
+                        {selectedCourse.payment_method && (
+                          <div className="flex items-center gap-3 text-lg">
+                            <Wallet className="w-5 h-5 text-neon-green" />
+                            <Badge className="bg-neon-green/20 text-neon-green border-neon-green/30 text-sm">
+                              {selectedCourse.payment_method}
+                            </Badge>
+                          </div>
+                        )}
                         {selectedCourse.account_name && (
                           <div className="flex items-center gap-3 text-lg">
                             <UserIcon className="w-5 h-5 text-neon-magenta" />
@@ -886,7 +896,7 @@ const Courses = () => {
                         {selectedCourse.account_number && (
                           <div className="flex items-center gap-3 text-lg">
                             <CreditCard className="w-5 h-5 text-neon-magenta" />
-                            <span className="font-mono">{selectedCourse.account_number}</span>
+                            <span className="font-mono font-bold">{selectedCourse.account_number}</span>
                           </div>
                         )}
                       </div>
