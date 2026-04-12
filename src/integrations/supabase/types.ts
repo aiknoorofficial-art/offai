@@ -186,6 +186,7 @@ export type Database = {
           file_url: string | null
           id: string
           image_url: string | null
+          payment_method: string | null
           price: number
           title: string
           updated_at: string
@@ -200,6 +201,7 @@ export type Database = {
           file_url?: string | null
           id?: string
           image_url?: string | null
+          payment_method?: string | null
           price?: number
           title: string
           updated_at?: string
@@ -214,6 +216,7 @@ export type Database = {
           file_url?: string | null
           id?: string
           image_url?: string | null
+          payment_method?: string | null
           price?: number
           title?: string
           updated_at?: string

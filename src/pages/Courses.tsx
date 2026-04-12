@@ -38,6 +38,7 @@ interface Course {
   image_url: string | null;
   account_number: string | null;
   account_name: string | null;
+  payment_method: string | null;
   created_at: string;
 }
 
@@ -70,6 +71,7 @@ const Courses = () => {
   const [price, setPrice] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [accountName, setAccountName] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -86,6 +88,7 @@ const Courses = () => {
   const [orderSenderNumber, setOrderSenderNumber] = useState("");
   const [submittingOrder, setSubmittingOrder] = useState(false);
   const [showOrderForm, setShowOrderForm] = useState(false);
+  const [buyerOrderStatus, setBuyerOrderStatus] = useState<string | null>(null);
 
   // Earnings states
   const [balance, setBalance] = useState(0);
@@ -254,6 +257,10 @@ const Courses = () => {
       toast.error("Please enter a valid price");
       return;
     }
+    if (!accountName.trim() || !accountNumber.trim() || !paymentMethod) {
+      toast.error("Please fill in all payment details (Account Name, Account Number, Payment Method)");
+      return;
+    }
 
     setUploading(true);
     let fileUrl = null;
@@ -309,8 +316,9 @@ const Courses = () => {
           file_url: fileUrl,
           file_name: fileName,
           image_url: imageUrl,
-          account_number: accountNumber.trim() || null,
-          account_name: accountName.trim() || null,
+          account_number: accountNumber.trim(),
+          account_name: accountName.trim(),
+          payment_method: paymentMethod,
         });
 
       if (insertError) throw insertError;
@@ -333,6 +341,7 @@ const Courses = () => {
     setPrice("");
     setAccountNumber("");
     setAccountName("");
+    setPaymentMethod("");
     setFile(null);
     setImageFile(null);
   };
@@ -370,9 +379,23 @@ const Courses = () => {
     }
   };
 
-  const openCourseDetail = (course: Course) => {
+  const openCourseDetail = async (course: Course) => {
     setSelectedCourse(course);
+    setBuyerOrderStatus(null);
     fetchReviews(course.id);
+    // Check if current user has an accepted order for this course
+    if (user && course.user_id !== user.id) {
+      const { data } = await supabase
+        .from("course_orders")
+        .select("status")
+        .eq("course_id", course.id)
+        .eq("buyer_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1);
+      if (data && data.length > 0) {
+        setBuyerOrderStatus(data[0].status);
+      }
+    }
   };
 
   const submitReview = async () => {
@@ -536,9 +559,33 @@ const Courses = () => {
                     </div>
                   </div>
 
+                  <div className="space-y-2">
+                    <Label htmlFor="paymentMethod">Payment Method *</Label>
+                    <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+                      <SelectTrigger className="border-neon-magenta/30">
+                        <SelectValue placeholder="Select payment method" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Easypaisa">Easypaisa</SelectItem>
+                        <SelectItem value="JazzCash">JazzCash</SelectItem>
+                        <SelectItem value="HBL">HBL</SelectItem>
+                        <SelectItem value="UBL">UBL</SelectItem>
+                        <SelectItem value="MCB">MCB Bank</SelectItem>
+                        <SelectItem value="Meezan">Meezan Bank</SelectItem>
+                        <SelectItem value="Allied">Allied Bank</SelectItem>
+                        <SelectItem value="PayPal">PayPal</SelectItem>
+                        <SelectItem value="Wise">Wise</SelectItem>
+                        <SelectItem value="Payoneer">Payoneer</SelectItem>
+                        <SelectItem value="Skrill">Skrill</SelectItem>
+                        <SelectItem value="BinancePay">Binance Pay</SelectItem>
+                        <SelectItem value="PerfectMoney">Perfect Money</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="accountName">Account Name</Label>
+                      <Label htmlFor="accountName">Account Name *</Label>
                       <div className="relative">
                         <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neon-magenta" />
                         <Input
@@ -547,11 +594,12 @@ const Courses = () => {
                           onChange={(e) => setAccountName(e.target.value)}
                           placeholder="Your name"
                           className="pl-9 border-neon-magenta/30 focus:border-neon-magenta"
+                          required
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="accountNumber">Account Number</Label>
+                      <Label htmlFor="accountNumber">Account Number *</Label>
                       <div className="relative">
                         <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neon-magenta" />
                         <Input
@@ -560,6 +608,7 @@ const Courses = () => {
                           onChange={(e) => setAccountNumber(e.target.value)}
                           placeholder="Payment account"
                           className="pl-9 border-neon-magenta/30 focus:border-neon-magenta"
+                          required
                         />
                       </div>
                     </div>
@@ -824,10 +873,20 @@ const Courses = () => {
                       PKR {selectedCourse.price.toLocaleString()}
                     </div>
                     
-                    {/* Payment details only visible to course owner */}
-                    {isOwner && (selectedCourse.account_name || selectedCourse.account_number) && (
+                    {/* Payment details visible to everyone for payment */}
+                    {(selectedCourse.account_name || selectedCourse.account_number) && (
                       <div className="space-y-3 mb-4">
-                        <p className="text-muted-foreground font-semibold text-lg">Your Payment Details:</p>
+                        <p className="text-muted-foreground font-semibold text-lg">
+                          {isOwner ? "Your Payment Details:" : "Send Payment To:"}
+                        </p>
+                        {selectedCourse.payment_method && (
+                          <div className="flex items-center gap-3 text-lg">
+                            <Wallet className="w-5 h-5 text-neon-green" />
+                            <Badge className="bg-neon-green/20 text-neon-green border-neon-green/30 text-sm">
+                              {selectedCourse.payment_method}
+                            </Badge>
+                          </div>
+                        )}
                         {selectedCourse.account_name && (
                           <div className="flex items-center gap-3 text-lg">
                             <UserIcon className="w-5 h-5 text-neon-magenta" />
@@ -837,7 +896,7 @@ const Courses = () => {
                         {selectedCourse.account_number && (
                           <div className="flex items-center gap-3 text-lg">
                             <CreditCard className="w-5 h-5 text-neon-magenta" />
-                            <span className="font-mono">{selectedCourse.account_number}</span>
+                            <span className="font-mono font-bold">{selectedCourse.account_number}</span>
                           </div>
                         )}
                       </div>
@@ -928,19 +987,32 @@ const Courses = () => {
                     )}
                   </div>
 
-                  {/* Course File */}
+                  {/* Course File - locked until order accepted */}
                   {selectedCourse.file_url && (
                     <div>
                       <h4 className="font-semibold text-foreground mb-3 text-lg">Course Material</h4>
-                      <a
-                        href={selectedCourse.file_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-3 px-6 py-3 rounded-lg bg-neon-purple/20 text-neon-purple hover:bg-neon-purple/30 transition-colors text-lg font-medium"
-                      >
-                        <Upload className="w-5 h-5" />
-                        {selectedCourse.file_name || "Download File"}
-                      </a>
+                      {isOwner || buyerOrderStatus === "accepted" ? (
+                        <a
+                          href={selectedCourse.file_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-3 px-6 py-3 rounded-lg bg-neon-purple/20 text-neon-purple hover:bg-neon-purple/30 transition-colors text-lg font-medium"
+                        >
+                          <Upload className="w-5 h-5" />
+                          {selectedCourse.file_name || "Download File"}
+                        </a>
+                      ) : (
+                        <div className="p-4 rounded-lg bg-muted/50 border border-border text-center">
+                          <Package className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                          <p className="text-muted-foreground text-sm font-medium">
+                            {buyerOrderStatus === "pending" 
+                              ? "🔒 Your order is pending approval. File will unlock once accepted."
+                              : buyerOrderStatus === "rejected"
+                              ? "❌ Your order was rejected. Contact the seller for details."
+                              : "🔒 Place an order to access course materials."}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
 
