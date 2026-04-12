@@ -987,19 +987,32 @@ const Courses = () => {
                     )}
                   </div>
 
-                  {/* Course File */}
+                  {/* Course File - locked until order accepted */}
                   {selectedCourse.file_url && (
                     <div>
                       <h4 className="font-semibold text-foreground mb-3 text-lg">Course Material</h4>
-                      <a
-                        href={selectedCourse.file_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-3 px-6 py-3 rounded-lg bg-neon-purple/20 text-neon-purple hover:bg-neon-purple/30 transition-colors text-lg font-medium"
-                      >
-                        <Upload className="w-5 h-5" />
-                        {selectedCourse.file_name || "Download File"}
-                      </a>
+                      {isOwner || buyerOrderStatus === "accepted" ? (
+                        <a
+                          href={selectedCourse.file_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-3 px-6 py-3 rounded-lg bg-neon-purple/20 text-neon-purple hover:bg-neon-purple/30 transition-colors text-lg font-medium"
+                        >
+                          <Upload className="w-5 h-5" />
+                          {selectedCourse.file_name || "Download File"}
+                        </a>
+                      ) : (
+                        <div className="p-4 rounded-lg bg-muted/50 border border-border text-center">
+                          <Package className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                          <p className="text-muted-foreground text-sm font-medium">
+                            {buyerOrderStatus === "pending" 
+                              ? "🔒 Your order is pending approval. File will unlock once accepted."
+                              : buyerOrderStatus === "rejected"
+                              ? "❌ Your order was rejected. Contact the seller for details."
+                              : "🔒 Place an order to access course materials."}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
 
