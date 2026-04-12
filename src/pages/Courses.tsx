@@ -38,6 +38,7 @@ interface Course {
   image_url: string | null;
   account_number: string | null;
   account_name: string | null;
+  payment_method: string | null;
   created_at: string;
 }
 
