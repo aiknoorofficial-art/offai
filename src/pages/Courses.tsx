@@ -379,9 +379,23 @@ const Courses = () => {
     }
   };
 
-  const openCourseDetail = (course: Course) => {
+  const openCourseDetail = async (course: Course) => {
     setSelectedCourse(course);
+    setBuyerOrderStatus(null);
     fetchReviews(course.id);
+    // Check if current user has an accepted order for this course
+    if (user && course.user_id !== user.id) {
+      const { data } = await supabase
+        .from("course_orders")
+        .select("status")
+        .eq("course_id", course.id)
+        .eq("buyer_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1);
+      if (data && data.length > 0) {
+        setBuyerOrderStatus(data[0].status);
+      }
+    }
   };
 
   const submitReview = async () => {
