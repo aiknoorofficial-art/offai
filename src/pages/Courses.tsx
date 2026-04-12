@@ -559,9 +559,33 @@ const Courses = () => {
                     </div>
                   </div>
 
+                  <div className="space-y-2">
+                    <Label htmlFor="paymentMethod">Payment Method *</Label>
+                    <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+                      <SelectTrigger className="border-neon-magenta/30">
+                        <SelectValue placeholder="Select payment method" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Easypaisa">Easypaisa</SelectItem>
+                        <SelectItem value="JazzCash">JazzCash</SelectItem>
+                        <SelectItem value="HBL">HBL</SelectItem>
+                        <SelectItem value="UBL">UBL</SelectItem>
+                        <SelectItem value="MCB">MCB Bank</SelectItem>
+                        <SelectItem value="Meezan">Meezan Bank</SelectItem>
+                        <SelectItem value="Allied">Allied Bank</SelectItem>
+                        <SelectItem value="PayPal">PayPal</SelectItem>
+                        <SelectItem value="Wise">Wise</SelectItem>
+                        <SelectItem value="Payoneer">Payoneer</SelectItem>
+                        <SelectItem value="Skrill">Skrill</SelectItem>
+                        <SelectItem value="BinancePay">Binance Pay</SelectItem>
+                        <SelectItem value="PerfectMoney">Perfect Money</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="accountName">Account Name</Label>
+                      <Label htmlFor="accountName">Account Name *</Label>
                       <div className="relative">
                         <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neon-magenta" />
                         <Input
@@ -570,11 +594,12 @@ const Courses = () => {
                           onChange={(e) => setAccountName(e.target.value)}
                           placeholder="Your name"
                           className="pl-9 border-neon-magenta/30 focus:border-neon-magenta"
+                          required
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="accountNumber">Account Number</Label>
+                      <Label htmlFor="accountNumber">Account Number *</Label>
                       <div className="relative">
                         <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neon-magenta" />
                         <Input
@@ -583,6 +608,7 @@ const Courses = () => {
                           onChange={(e) => setAccountNumber(e.target.value)}
                           placeholder="Payment account"
                           className="pl-9 border-neon-magenta/30 focus:border-neon-magenta"
+                          required
                         />
                       </div>
                     </div>
