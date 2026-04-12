@@ -256,6 +256,10 @@ const Courses = () => {
       toast.error("Please enter a valid price");
       return;
     }
+    if (!accountName.trim() || !accountNumber.trim() || !paymentMethod) {
+      toast.error("Please fill in all payment details (Account Name, Account Number, Payment Method)");
+      return;
+    }
 
     setUploading(true);
     let fileUrl = null;
@@ -311,8 +315,9 @@ const Courses = () => {
           file_url: fileUrl,
           file_name: fileName,
           image_url: imageUrl,
-          account_number: accountNumber.trim() || null,
-          account_name: accountName.trim() || null,
+          account_number: accountNumber.trim(),
+          account_name: accountName.trim(),
+          payment_method: paymentMethod,
         });
 
       if (insertError) throw insertError;
@@ -335,6 +340,7 @@ const Courses = () => {
     setPrice("");
     setAccountNumber("");
     setAccountName("");
+    setPaymentMethod("");
     setFile(null);
     setImageFile(null);
   };
