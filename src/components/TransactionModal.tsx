@@ -6,23 +6,38 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { 
-  Smartphone, 
-  Building2, 
   PiggyBank,
   Copy,
   Check,
+  Smartphone,
   Globe
 } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
+import easypaisaLogo from "@/assets/logos/easypaisa.png";
+import jazzcashLogo from "@/assets/logos/jazzcash.png";
+import paypalLogo from "@/assets/logos/paypal.png";
+import wiseLogo from "@/assets/logos/wise.png";
+import payoneerLogo from "@/assets/logos/payoneer.png";
+import skrillLogo from "@/assets/logos/skrill.png";
+import binanceLogo from "@/assets/logos/binance.png";
+import perfectmoneyLogo from "@/assets/logos/perfectmoney.png";
+import hblLogo from "@/assets/logos/hbl.png";
+import ublLogo from "@/assets/logos/ubl.png";
+import mcbLogo from "@/assets/logos/mcb.png";
+import alliedLogo from "@/assets/logos/allied.png";
+import meezanLogo from "@/assets/logos/meezan.png";
+import faysalLogo from "@/assets/logos/faysal.png";
+import bankislamiLogo from "@/assets/logos/bankislami.png";
+import askariLogo from "@/assets/logos/askari.png";
+
 const DEPOSIT_ACCOUNTS = [
   {
     id: "easypaisa",
     name: "Easypaisa",
-    icon: Smartphone,
+    logo: easypaisaLogo,
     color: "bg-green-500",
     accountName: "Fazal ur Rehman",
     accountNumber: "03343558055",
@@ -31,7 +46,7 @@ const DEPOSIT_ACCOUNTS = [
   {
     id: "jazzcash",
     name: "JazzCash",
-    icon: Smartphone,
+    logo: jazzcashLogo,
     color: "bg-red-500",
     accountName: "Fazal ur Rehman",
     accountNumber: "03343558055",
@@ -40,24 +55,36 @@ const DEPOSIT_ACCOUNTS = [
 ];
 
 const INTERNATIONAL_WALLETS = [
-  { id: "paypal", name: "PayPal", icon: Globe, color: "bg-blue-600", description: "Worldwide" },
-  { id: "wise", name: "Wise", icon: Globe, color: "bg-emerald-500", description: "Low fees, 80+ countries" },
-  { id: "payoneer", name: "Payoneer", icon: Globe, color: "bg-orange-500", description: "190+ countries" },
-  { id: "skrill", name: "Skrill", icon: Globe, color: "bg-purple-600", description: "40+ currencies" },
-  { id: "binance", name: "Binance Pay", icon: Globe, color: "bg-yellow-500", description: "Crypto & fiat" },
-  { id: "perfectmoney", name: "Perfect Money", icon: Globe, color: "bg-red-600", description: "E-currency" },
+  { id: "paypal", name: "PayPal", logo: paypalLogo, description: "Worldwide" },
+  { id: "wise", name: "Wise", logo: wiseLogo, description: "Low fees, 80+ countries" },
+  { id: "payoneer", name: "Payoneer", logo: payoneerLogo, description: "190+ countries" },
+  { id: "skrill", name: "Skrill", logo: skrillLogo, description: "40+ currencies" },
+  { id: "binance", name: "Binance Pay", logo: binanceLogo, description: "Crypto & fiat" },
+  { id: "perfectmoney", name: "Perfect Money", logo: perfectmoneyLogo, description: "E-currency" },
 ];
 
 const PAKISTAN_BANKS = [
-  { id: "hbl", name: "HBL", icon: Building2, color: "bg-emerald-600", description: "Habib Bank Limited" },
-  { id: "ubl", name: "UBL", icon: Building2, color: "bg-purple-600", description: "United Bank Limited" },
-  { id: "mcb", name: "MCB", icon: Building2, color: "bg-blue-600", description: "MCB Bank" },
-  { id: "allied", name: "Allied Bank", icon: Building2, color: "bg-orange-500", description: "Allied Bank Limited" },
-  { id: "meezan", name: "Meezan Bank", icon: Building2, color: "bg-teal-600", description: "Islamic Banking" },
-  { id: "faysal", name: "Faysal Bank", icon: Building2, color: "bg-indigo-600", description: "Faysal Bank Limited" },
-  { id: "bankislami", name: "BankIslami", icon: Building2, color: "bg-cyan-600", description: "Islamic Banking" },
-  { id: "askari", name: "Askari Bank", icon: Building2, color: "bg-amber-600", description: "Askari Bank Limited" },
+  { id: "hbl", name: "HBL", logo: hblLogo, description: "Habib Bank Limited" },
+  { id: "ubl", name: "UBL", logo: ublLogo, description: "United Bank Limited" },
+  { id: "mcb", name: "MCB", logo: mcbLogo, description: "MCB Bank" },
+  { id: "allied", name: "Allied Bank", logo: alliedLogo, description: "Allied Bank Limited" },
+  { id: "meezan", name: "Meezan Bank", logo: meezanLogo, description: "Islamic Banking" },
+  { id: "faysal", name: "Faysal Bank", logo: faysalLogo, description: "Faysal Bank Limited" },
+  { id: "bankislami", name: "BankIslami", logo: bankislamiLogo, description: "Islamic Banking" },
+  { id: "askari", name: "Askari Bank", logo: askariLogo, description: "Askari Bank Limited" },
 ];
+
+const AnimatedLogo = ({ src, alt, className = "", delay = 0 }: { src: string; alt: string; className?: string; delay?: number }) => (
+  <img
+    src={src}
+    alt={alt}
+    loading="lazy"
+    className={`transition-all duration-500 hover:scale-110 ${className}`}
+    style={{
+      animation: `logoFloat 3s ease-in-out ${delay}s infinite`,
+    }}
+  />
+);
 
 export const TransactionModal = () => {
   const [selectedMethod, setSelectedMethod] = useState<string | null>("easypaisa");
@@ -77,6 +104,16 @@ export const TransactionModal = () => {
 
   return (
     <Dialog>
+      <style>{`
+        @keyframes logoFloat {
+          0%, 100% { transform: translateY(0) scale(1); }
+          50% { transform: translateY(-4px) scale(1.05); }
+        }
+        @keyframes logoPulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.1); }
+          50% { box-shadow: 0 0 12px 4px rgba(255,255,255,0.15); }
+        }
+      `}</style>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2">
           <PiggyBank className="w-4 h-4" />
@@ -117,7 +154,7 @@ export const TransactionModal = () => {
 
         {depositTab === "pakistan" && (
           <div className="space-y-4 mt-2">
-            {DEPOSIT_ACCOUNTS.map((account) => (
+            {DEPOSIT_ACCOUNTS.map((account, idx) => (
               <div
                 key={account.id}
                 className={`p-4 rounded-lg border-2 relative overflow-hidden ${
@@ -127,13 +164,14 @@ export const TransactionModal = () => {
                 }`}
               >
                 {account.recommended && (
-                  <div className="absolute top-0 right-0 bg-green-500 text-white text-xs px-2 py-1 rounded-bl-lg font-medium">
+                  <div className="absolute top-0 right-0 bg-green-500 text-foreground text-xs px-2 py-1 rounded-bl-lg font-medium">
                     RECOMMENDED
                   </div>
                 )}
                 <div className="flex items-center gap-3 mb-3">
-                  <div className={`w-10 h-10 rounded-lg ${account.color} flex items-center justify-center`}>
-                    <account.icon className="w-5 h-5 text-white" />
+                  <div className="w-12 h-12 rounded-lg bg-background/80 flex items-center justify-center p-1 overflow-hidden"
+                    style={{ animation: `logoPulse 2s ease-in-out ${idx * 0.3}s infinite` }}>
+                    <AnimatedLogo src={account.logo} alt={account.name} className="w-10 h-10 object-contain" delay={idx * 0.5} />
                   </div>
                   <div>
                     <h3 className="font-bold text-foreground">{account.name}</h3>
@@ -170,8 +208,8 @@ export const TransactionModal = () => {
 
             <div className="space-y-2">
               <p className="text-sm font-medium text-foreground">Or deposit from banks</p>
-              <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto p-1">
-                {PAKISTAN_BANKS.map((method) => (
+              <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto p-1">
+                {PAKISTAN_BANKS.map((method, idx) => (
                   <button
                     key={method.id}
                     onClick={() => setSelectedMethod(method.id)}
@@ -181,10 +219,13 @@ export const TransactionModal = () => {
                         : "border-border hover:border-primary/50 hover:bg-secondary/50"
                     }`}
                   >
-                    <div className={`w-6 h-6 rounded-md ${method.color} flex items-center justify-center`}>
-                      <method.icon className="w-3 h-3 text-white" />
+                    <div className="w-8 h-8 rounded-md bg-background/80 flex items-center justify-center p-0.5 overflow-hidden shrink-0">
+                      <AnimatedLogo src={method.logo} alt={method.name} className="w-7 h-7 object-contain" delay={idx * 0.2} />
                     </div>
-                    <p className="font-medium text-xs text-foreground">{method.name}</p>
+                    <div className="min-w-0">
+                      <p className="font-medium text-xs text-foreground truncate">{method.name}</p>
+                      <p className="text-[10px] text-muted-foreground truncate">{method.description}</p>
+                    </div>
                   </button>
                 ))}
               </div>
@@ -198,7 +239,7 @@ export const TransactionModal = () => {
               Deposit using international wallets from 80+ countries
             </p>
             <div className="grid grid-cols-2 gap-2">
-              {INTERNATIONAL_WALLETS.map((wallet) => (
+              {INTERNATIONAL_WALLETS.map((wallet, idx) => (
                 <button
                   key={wallet.id}
                   onClick={() => setSelectedMethod(wallet.id)}
@@ -208,10 +249,11 @@ export const TransactionModal = () => {
                       : "border-border hover:border-primary/50 hover:bg-secondary/50"
                   }`}
                 >
-                  <div className={`w-8 h-8 rounded-md ${wallet.color} flex items-center justify-center`}>
-                    <wallet.icon className="w-4 h-4 text-white" />
+                  <div className="w-10 h-10 rounded-md bg-background/80 flex items-center justify-center p-1 overflow-hidden shrink-0"
+                    style={{ animation: `logoPulse 2.5s ease-in-out ${idx * 0.4}s infinite` }}>
+                    <AnimatedLogo src={wallet.logo} alt={wallet.name} className="w-8 h-8 object-contain" delay={idx * 0.3} />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <p className="font-medium text-sm text-foreground">{wallet.name}</p>
                     <p className="text-xs text-muted-foreground">{wallet.description}</p>
                   </div>
