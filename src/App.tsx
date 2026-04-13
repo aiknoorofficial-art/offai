@@ -13,6 +13,7 @@ import Profile from "./pages/Profile";
 import Courses from "./pages/Courses";
 import Orders from "./pages/Orders";
 import Admin from "./pages/Admin";
+import Referral from "./pages/Referral";
 import NotFound from "./pages/NotFound";
 import { WhatsNewModal } from "./components/WhatsNewModal";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -39,6 +40,7 @@ const App = () => (
           <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
           <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+          <Route path="/referral" element={<ProtectedRoute><Referral /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
