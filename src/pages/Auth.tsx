@@ -42,6 +42,7 @@ const Auth = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const referralCode = searchParams.get("ref") || "";
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -122,9 +123,25 @@ const Auth = () => {
             .insert({
               user_id: data.user.id,
               full_name: fullName,
+              referred_by: referralCode || null,
             });
-        if (profileError && !profileError.message.includes('duplicate')) {
+          if (profileError && !profileError.message.includes('duplicate')) {
             console.error("Profile creation error:", profileError);
+          }
+
+          // Create referral record if signed up via referral link
+          if (referralCode) {
+            const { data: referrerProfile } = await supabase
+              .from('profiles')
+              .select('user_id')
+              .eq('referral_code', referralCode)
+              .maybeSingle();
+            if (referrerProfile) {
+              await supabase.from('referrals').insert({
+                referrer_id: referrerProfile.user_id,
+                referred_id: data.user.id,
+              });
+            }
           }
         }
         

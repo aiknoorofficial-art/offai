@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
-import { LogOut, Zap, User as UserIcon, Menu, X, Shield } from "lucide-react";
+import { LogOut, Zap, User as UserIcon, Menu, X, Shield, Gift } from "lucide-react";
 import { TransactionModal } from "./TransactionModal";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { NotificationBell } from "./NotificationBell";
@@ -71,6 +71,12 @@ export const Header = ({ user }: HeaderProps) => {
           <Link to="/orders" onClick={closeMenu}>
             <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start" : ""}>
               Orders
+            </Button>
+          </Link>
+          <Link to="/referral" onClick={closeMenu}>
+            <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start gap-2" : "gap-1"}>
+              <Gift className="w-4 h-4" />
+              {mobile ? "Referral" : "Referral"}
             </Button>
           </Link>
           {isAdmin && (
