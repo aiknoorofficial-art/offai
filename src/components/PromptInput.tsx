@@ -42,9 +42,12 @@ export const PromptInput = ({ onSubmit, isLoading }: PromptInputProps) => {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="relative">
         <Textarea
-          placeholder="Describe the code you want to generate...&#10;&#10;Example: Create a React component for a todo list with add, delete, and toggle functionality"
+          placeholder="Describe the code you want to generate (no commas or special characters)&#10;&#10;Example: Create a React component for a todo list with add delete and toggle functionality"
           value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
+          onChange={(e) => {
+            const cleaned = e.target.value.replace(/[^a-zA-Z0-9\s\-?!()'/:\n]/g, "");
+            setPrompt(cleaned);
+          }}
           className="min-h-[150px] pr-4 text-base border-glow"
           disabled={isLoading}
         />

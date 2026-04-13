@@ -210,9 +210,12 @@ const Video = () => {
           <AnimatedSection delay={100}>
             <div className="bg-card border border-border rounded-xl p-4 sm:p-6 box-glow">
               <Textarea
-                placeholder="Describe the video you want to generate... (e.g., 'A cinematic sunset over mountains with birds flying, dramatic lighting, smooth camera pan')"
+                placeholder="Describe the video you want to generate (no commas or special characters)&#10;&#10;Example: A cinematic sunset over mountains with birds flying dramatic lighting smooth camera pan"
                 value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
+                onChange={(e) => {
+                  const cleaned = e.target.value.replace(/[^a-zA-Z0-9\s\-?!()'/:\n]/g, "");
+                  setPrompt(cleaned);
+                }}
                 className="min-h-[120px] sm:min-h-[150px] bg-background border-border mb-4 resize-none text-sm sm:text-base"
                 disabled={isGenerating}
               />

@@ -219,8 +219,11 @@ const Chat = () => {
         <form onSubmit={handleSubmit} className="flex gap-2">
           <Textarea
             value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask me anything..."
+            onChange={(e) => {
+              const cleaned = e.target.value.replace(/[^a-zA-Z0-9\s\-?!()'/:\n]/g, "");
+              setInput(cleaned);
+            }}
+            placeholder="Ask me anything (no commas or special characters)"
             className="min-h-[50px] max-h-[120px] resize-none"
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
