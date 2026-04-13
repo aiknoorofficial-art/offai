@@ -95,6 +95,36 @@ const Orders = () => {
       setOrders((prev) =>
         prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
       );
+
+      // Award referral commission on first accepted order
+      if (newStatus === "accepted") {
+        const order = orders.find(o => o.id === orderId);
+        if (order) {
+          try {
+            // Check if the buyer was referred and has a pending referral
+            const { data: referral } = await supabase
+              .from("referrals")
+              .select("*")
+              .eq("referred_id", order.buyer_id)
+              .eq("status", "pending")
+              .maybeSingle();
+
+            if (referral) {
+              const commission = Math.round(order.course_price * 0.1); // 10% commission
+              await supabase
+                .from("referrals")
+                .update({
+                  status: "completed",
+                  commission_amount: commission,
+                  order_id: orderId,
+                })
+                .eq("id", referral.id);
+            }
+          } catch (e) {
+            console.error("Referral commission error:", e);
+          }
+        }
+      }
     }
     setUpdatingId(null);
   };
