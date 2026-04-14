@@ -80,36 +80,54 @@ const Index = () => {
     setBalance(total);
   };
 
+  const [binanceUid, setBinanceUid] = useState("");
+
+  const isBinance = withdrawMethod === "Binance USDT TRC20";
+
   const handleWithdraw = async () => {
     if (!user) return;
     const amount = Number(withdrawAmount);
     const available = balance - totalWithdrawn;
-    if (!amount || amount <= 0 || amount > available) {
-      toast({ title: "Invalid amount", description: `You can withdraw up to Rs. ${available.toLocaleString()}`, variant: "destructive" });
-      return;
+
+    if (isBinance) {
+      if (!amount || amount < 3) {
+        toast({ title: "Minimum $3", description: "Binance USDT TRC20 minimum withdrawal is $3", variant: "destructive" });
+        return;
+      }
+      if (!withdrawName || !binanceUid) {
+        toast({ title: "Fill all fields", description: "Binance username and UID are required", variant: "destructive" });
+        return;
+      }
+    } else {
+      if (!amount || amount <= 0 || amount > available) {
+        toast({ title: "Invalid amount", description: `You can withdraw up to Rs. ${available.toLocaleString()}`, variant: "destructive" });
+        return;
+      }
+      if (!withdrawMethod || !withdrawAccount || !withdrawName) {
+        toast({ title: "Fill all fields", variant: "destructive" });
+        return;
+      }
     }
-    if (!withdrawMethod || !withdrawAccount || !withdrawName) {
-      toast({ title: "Fill all fields", variant: "destructive" });
-      return;
-    }
+
     setWithdrawLoading(true);
     const { error } = await supabase.from("withdrawals").insert({
       user_id: user.id,
       amount,
       method: withdrawMethod,
-      account_number: withdrawAccount,
+      account_number: isBinance ? `UID: ${binanceUid}` : withdrawAccount,
       account_name: withdrawName,
     });
     setWithdrawLoading(false);
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "Withdrawal Requested!", description: `Rs. ${amount.toLocaleString()} via ${withdrawMethod}` });
+      toast({ title: "Withdrawal Requested!", description: `${isBinance ? '$' : 'Rs. '}${amount.toLocaleString()} via ${withdrawMethod}` });
       setWithdrawOpen(false);
       setWithdrawAmount("");
       setWithdrawMethod("");
       setWithdrawAccount("");
       setWithdrawName("");
+      setBinanceUid("");
       fetchWithdrawn(user.id);
     }
   };
