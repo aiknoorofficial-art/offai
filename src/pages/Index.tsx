@@ -284,7 +284,6 @@ const Index = () => {
                     <Button onClick={handleWithdraw} disabled={withdrawLoading} className="w-full bg-gradient-to-r from-neon-orange to-neon-yellow text-background">
                       {withdrawLoading ? "Submitting..." : "Submit Withdrawal Request"}
                     </Button>
-                    </Button>
                   </div>
                 </DialogContent>
               </Dialog>
