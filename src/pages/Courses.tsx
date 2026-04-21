@@ -36,10 +36,13 @@ interface Course {
   file_url: string | null;
   file_name: string | null;
   image_url: string | null;
+  created_at: string;
+}
+
+interface PaymentDetails {
   account_number: string | null;
   account_name: string | null;
   payment_method: string | null;
-  created_at: string;
 }
 
 interface Review {
@@ -62,6 +65,7 @@ const Courses = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loadingReviews, setLoadingReviews] = useState(false);
   
@@ -306,7 +310,7 @@ const Courses = () => {
       }
 
       // Insert course record
-      const { error: insertError } = await supabase
+      const { data: newCourse, error: insertError } = await supabase
         .from("courses")
         .insert({
           user_id: user?.id,
@@ -316,12 +320,25 @@ const Courses = () => {
           file_url: fileUrl,
           file_name: fileName,
           image_url: imageUrl,
-          account_number: accountNumber.trim(),
-          account_name: accountName.trim(),
-          payment_method: paymentMethod,
-        });
+        })
+        .select()
+        .single();
 
       if (insertError) throw insertError;
+
+      // Save payment details into private table
+      if (newCourse && user) {
+        const { error: pdError } = await supabase
+          .from("course_payment_details")
+          .insert({
+            course_id: newCourse.id,
+            seller_id: user.id,
+            account_number: accountNumber.trim(),
+            account_name: accountName.trim(),
+            payment_method: paymentMethod,
+          });
+        if (pdError) throw pdError;
+      }
 
       toast.success("Course created successfully!");
       resetForm();
@@ -382,8 +399,16 @@ const Courses = () => {
   const openCourseDetail = async (course: Course) => {
     setSelectedCourse(course);
     setBuyerOrderStatus(null);
+    setPaymentDetails(null);
     fetchReviews(course.id);
-    // Check if current user has an accepted order for this course
+    // Fetch payment details (RLS allows only seller, buyers with orders, and admins)
+    const { data: pd } = await supabase
+      .from("course_payment_details")
+      .select("account_number, account_name, payment_method")
+      .eq("course_id", course.id)
+      .maybeSingle();
+    if (pd) setPaymentDetails(pd);
+    // Check if current user has an order for this course
     if (user && course.user_id !== user.id) {
       const { data } = await supabase
         .from("course_orders")
@@ -873,30 +898,30 @@ const Courses = () => {
                       PKR {selectedCourse.price.toLocaleString()}
                     </div>
                     
-                    {/* Payment details visible to everyone for payment */}
-                    {(selectedCourse.account_name || selectedCourse.account_number) && (
+                    {/* Payment details only visible to seller, buyers with orders, or admins */}
+                    {paymentDetails && (paymentDetails.account_name || paymentDetails.account_number) && (
                       <div className="space-y-3 mb-4">
                         <p className="text-muted-foreground font-semibold text-lg">
                           {isOwner ? "Your Payment Details:" : "Send Payment To:"}
                         </p>
-                        {selectedCourse.payment_method && (
+                        {paymentDetails.payment_method && (
                           <div className="flex items-center gap-3 text-lg">
                             <Wallet className="w-5 h-5 text-neon-green" />
                             <Badge className="bg-neon-green/20 text-neon-green border-neon-green/30 text-sm">
-                              {selectedCourse.payment_method}
+                              {paymentDetails.payment_method}
                             </Badge>
                           </div>
                         )}
-                        {selectedCourse.account_name && (
+                        {paymentDetails.account_name && (
                           <div className="flex items-center gap-3 text-lg">
                             <UserIcon className="w-5 h-5 text-neon-magenta" />
-                            <span>{selectedCourse.account_name}</span>
+                            <span>{paymentDetails.account_name}</span>
                           </div>
                         )}
-                        {selectedCourse.account_number && (
+                        {paymentDetails.account_number && (
                           <div className="flex items-center gap-3 text-lg">
                             <CreditCard className="w-5 h-5 text-neon-magenta" />
-                            <span className="font-mono font-bold">{selectedCourse.account_number}</span>
+                            <span className="font-mono font-bold">{paymentDetails.account_number}</span>
                           </div>
                         )}
                       </div>

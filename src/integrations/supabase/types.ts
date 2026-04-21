@@ -138,6 +138,47 @@ export type Database = {
           },
         ]
       }
+      course_payment_details: {
+        Row: {
+          account_name: string | null
+          account_number: string | null
+          course_id: string
+          created_at: string
+          id: string
+          payment_method: string | null
+          seller_id: string
+          updated_at: string
+        }
+        Insert: {
+          account_name?: string | null
+          account_number?: string | null
+          course_id: string
+          created_at?: string
+          id?: string
+          payment_method?: string | null
+          seller_id: string
+          updated_at?: string
+        }
+        Update: {
+          account_name?: string | null
+          account_number?: string | null
+          course_id?: string
+          created_at?: string
+          id?: string
+          payment_method?: string | null
+          seller_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_payment_details_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: true
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_reviews: {
         Row: {
           comment: string
@@ -178,45 +219,36 @@ export type Database = {
       }
       courses: {
         Row: {
-          account_name: string | null
-          account_number: string | null
           created_at: string
           description: string | null
           file_name: string | null
           file_url: string | null
           id: string
           image_url: string | null
-          payment_method: string | null
           price: number
           title: string
           updated_at: string
           user_id: string
         }
         Insert: {
-          account_name?: string | null
-          account_number?: string | null
           created_at?: string
           description?: string | null
           file_name?: string | null
           file_url?: string | null
           id?: string
           image_url?: string | null
-          payment_method?: string | null
           price?: number
           title: string
           updated_at?: string
           user_id: string
         }
         Update: {
-          account_name?: string | null
-          account_number?: string | null
           created_at?: string
           description?: string | null
           file_name?: string | null
           file_url?: string | null
           id?: string
           image_url?: string | null
-          payment_method?: string | null
           price?: number
           title?: string
           updated_at?: string
