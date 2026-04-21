@@ -898,30 +898,30 @@ const Courses = () => {
                       PKR {selectedCourse.price.toLocaleString()}
                     </div>
                     
-                    {/* Payment details visible to everyone for payment */}
-                    {(selectedCourse.account_name || selectedCourse.account_number) && (
+                    {/* Payment details only visible to seller, buyers with orders, or admins */}
+                    {paymentDetails && (paymentDetails.account_name || paymentDetails.account_number) && (
                       <div className="space-y-3 mb-4">
                         <p className="text-muted-foreground font-semibold text-lg">
                           {isOwner ? "Your Payment Details:" : "Send Payment To:"}
                         </p>
-                        {selectedCourse.payment_method && (
+                        {paymentDetails.payment_method && (
                           <div className="flex items-center gap-3 text-lg">
                             <Wallet className="w-5 h-5 text-neon-green" />
                             <Badge className="bg-neon-green/20 text-neon-green border-neon-green/30 text-sm">
-                              {selectedCourse.payment_method}
+                              {paymentDetails.payment_method}
                             </Badge>
                           </div>
                         )}
-                        {selectedCourse.account_name && (
+                        {paymentDetails.account_name && (
                           <div className="flex items-center gap-3 text-lg">
                             <UserIcon className="w-5 h-5 text-neon-magenta" />
-                            <span>{selectedCourse.account_name}</span>
+                            <span>{paymentDetails.account_name}</span>
                           </div>
                         )}
-                        {selectedCourse.account_number && (
+                        {paymentDetails.account_number && (
                           <div className="flex items-center gap-3 text-lg">
                             <CreditCard className="w-5 h-5 text-neon-magenta" />
-                            <span className="font-mono font-bold">{selectedCourse.account_number}</span>
+                            <span className="font-mono font-bold">{paymentDetails.account_number}</span>
                           </div>
                         )}
                       </div>
