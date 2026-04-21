@@ -255,6 +255,9 @@ const Index = () => {
                         <SelectContent>
                           <SelectItem value="Easypaisa">Easypaisa</SelectItem>
                           <SelectItem value="JazzCash">JazzCash</SelectItem>
+                          <SelectItem value="NayaPay">NayaPay</SelectItem>
+                          <SelectItem value="SadaPay">SadaPay</SelectItem>
+                          <SelectItem value="Bank Transfer (Pakistan)">Bank Transfer (Pakistan)</SelectItem>
                           <SelectItem value="Binance USDT TRC20">Binance USDT TRC20</SelectItem>
                         </SelectContent>
                       </Select>
