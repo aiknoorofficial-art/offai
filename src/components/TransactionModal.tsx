@@ -87,7 +87,7 @@ const AnimatedLogo = ({ src, alt, className = "", delay = 0 }: { src: string; al
 );
 
 export const TransactionModal = () => {
-  const [selectedMethod, setSelectedMethod] = useState<string | null>("easypaisa");
+  const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [depositTab, setDepositTab] = useState("pakistan");
   const { toast } = useToast();
