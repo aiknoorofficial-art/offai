@@ -12,6 +12,7 @@ import { Zap, Code, Sparkles, Terminal, ArrowRight, Video, MessageSquare, Shield
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
+import AdSense from "@/components/AdSense";
 
 const Index = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -475,6 +476,9 @@ const Index = () => {
         </div>
       </section>
 
+      <div className="container mx-auto px-4">
+        <AdSense />
+      </div>
       <Footer />
     </div>
   );
