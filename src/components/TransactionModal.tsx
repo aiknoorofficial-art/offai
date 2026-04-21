@@ -154,14 +154,17 @@ export const TransactionModal = () => {
 
         {depositTab === "pakistan" && (
           <div className="space-y-4 mt-2">
-            {DEPOSIT_ACCOUNTS.map((account, idx) => (
+            {DEPOSIT_ACCOUNTS.map((account, idx) => {
+              const isOpen = selectedMethod === account.id;
+              return (
               <div
                 key={account.id}
-                className={`p-4 rounded-lg border-2 relative overflow-hidden ${
+                className={`p-4 rounded-lg border-2 relative overflow-hidden cursor-pointer transition-all ${
                   account.id === "easypaisa"
                     ? "bg-green-500/20 border-green-500"
                     : "bg-red-500/20 border-red-500"
                 }`}
+                onClick={() => setSelectedMethod(isOpen ? null : account.id)}
               >
                 {account.recommended && (
                   <div className="absolute top-0 right-0 bg-green-500 text-foreground text-xs px-2 py-1 rounded-bl-lg font-medium">
@@ -173,38 +176,43 @@ export const TransactionModal = () => {
                     style={{ animation: `logoPulse 2s ease-in-out ${idx * 0.3}s infinite` }}>
                     <AnimatedLogo src={account.logo} alt={account.name} className="w-10 h-10 object-contain" delay={idx * 0.5} />
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <h3 className="font-bold text-foreground">{account.name}</h3>
-                    <p className="text-xs text-muted-foreground">Send to deposit instantly</p>
+                    <p className="text-xs text-muted-foreground">
+                      {isOpen ? "Tap to hide details" : "Tap to view account details"}
+                    </p>
                   </div>
                 </div>
-                
-                <div className="space-y-2 bg-background/50 rounded-lg p-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">Account Name:</span>
-                    <span className="font-semibold text-sm text-foreground">{account.accountName}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">Account Number:</span>
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono font-bold text-primary">{account.accountNumber}</span>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={() => handleCopyAccount(account.accountNumber, account.id)}
-                        className="h-7 w-7 p-0"
-                      >
-                        {copiedId === account.id ? (
-                          <Check className="w-3 h-3 text-green-500" />
-                        ) : (
-                          <Copy className="w-3 h-3" />
-                        )}
-                      </Button>
+
+                {isOpen && (
+                  <div className="space-y-2 bg-background/50 rounded-lg p-3" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground">Account Name:</span>
+                      <span className="font-semibold text-sm text-foreground">{account.accountName}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground">Account Number:</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-bold text-primary">{account.accountNumber}</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleCopyAccount(account.accountNumber, account.id)}
+                          className="h-7 w-7 p-0"
+                        >
+                          {copiedId === account.id ? (
+                            <Check className="w-3 h-3 text-green-500" />
+                          ) : (
+                            <Copy className="w-3 h-3" />
+                          )}
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
-            ))}
+              );
+            })}
 
             <div className="space-y-2">
               <p className="text-sm font-medium text-foreground">Or deposit from banks</p>
