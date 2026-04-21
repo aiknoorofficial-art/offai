@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Generate from "./pages/Generate";
 import Video from "./pages/Video";
+import Thumbnail from "./pages/Thumbnail";
 import Chat from "./pages/Chat";
 import Changelog from "./pages/Changelog";
 import Profile from "./pages/Profile";
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
           <Route path="/generate" element={<ProtectedRoute><Generate /></ProtectedRoute>} />
           <Route path="/video" element={<ProtectedRoute><Video /></ProtectedRoute>} />
+          <Route path="/thumbnail" element={<ProtectedRoute><Thumbnail /></ProtectedRoute>} />
           <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
           <Route path="/changelog" element={<ProtectedRoute><Changelog /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />

@@ -63,6 +63,11 @@ export const Header = ({ user }: HeaderProps) => {
               Video
             </Button>
           </Link>
+          <Link to="/thumbnail" onClick={closeMenu}>
+            <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start" : ""}>
+              Thumbnail
+            </Button>
+          </Link>
           <Link to="/courses" onClick={closeMenu}>
             <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start" : ""}>
               Courses
