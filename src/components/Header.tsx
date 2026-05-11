@@ -86,9 +86,13 @@ export const Header = ({ user }: HeaderProps) => {
           </Link>
           {isAdmin && (
             <Link to="/admin" onClick={closeMenu}>
-              <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start gap-2" : "gap-1"}>
+              <Button
+                variant="outline"
+                size={mobile ? "default" : "sm"}
+                className={`gap-1.5 border-neon-cyan/40 text-neon-cyan hover:bg-neon-cyan/10 hover:text-neon-cyan ${mobile ? "w-full justify-start" : ""}`}
+              >
                 <Shield className="w-4 h-4" />
-                {mobile ? "Admin" : ""}
+                Admin
               </Button>
             </Link>
           )}
