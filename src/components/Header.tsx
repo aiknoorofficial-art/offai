@@ -7,6 +7,7 @@ import { LogOut, Zap, User as UserIcon, Menu, X, Shield, Gift } from "lucide-rea
 import { TransactionModal } from "./TransactionModal";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { NotificationBell } from "./NotificationBell";
+import { WingoPredictor } from "./WingoPredictor";
 
 interface HeaderProps {
   user: User | null;
@@ -40,6 +41,7 @@ export const Header = ({ user }: HeaderProps) => {
 
   const NavLinks = ({ mobile = false }: { mobile?: boolean }) => (
     <>
+      <WingoPredictor />
       <TransactionModal />
       <Link to="/changelog" onClick={closeMenu}>
         <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start" : ""}>
