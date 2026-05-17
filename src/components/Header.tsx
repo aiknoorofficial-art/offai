@@ -7,6 +7,7 @@ import { LogOut, Zap, User as UserIcon, Menu, X, Shield, Gift } from "lucide-rea
 import { TransactionModal } from "./TransactionModal";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { NotificationBell } from "./NotificationBell";
+import { WingoPredictor } from "./WingoPredictor";
 
 interface HeaderProps {
   user: User | null;
