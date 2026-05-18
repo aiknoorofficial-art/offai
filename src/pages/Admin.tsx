@@ -99,7 +99,22 @@ const Admin = () => {
   }, [navigate]);
 
   const fetchAll = () => {
-    fetchWithdrawals(); fetchOrders(); fetchUsers(); fetchCourses(); fetchReferrals();
+    fetchWithdrawals(); fetchOrders(); fetchUsers(); fetchCourses(); fetchReferrals(); fetchWingo();
+  };
+
+  const fetchWingo = async () => {
+    const { data } = await supabase.from("wingo_access_requests").select("*").order("created_at", { ascending: false });
+    if (!data) { setWingoReqs([]); return; }
+    const ids = [...new Set(data.map((r: any) => r.user_id))];
+    const { data: ps } = await supabase.from("profiles").select("user_id, full_name").in("user_id", ids);
+    const pm = new Map((ps || []).map(p => [p.user_id, p.full_name]));
+    setWingoReqs(data.map((r: any) => ({ ...r, full_name: pm.get(r.user_id) || "Unknown" })));
+  };
+
+  const updateWingoStatus = async (id: string, status: "approved" | "rejected") => {
+    const { error } = await supabase.from("wingo_access_requests").update({ status }).eq("id", id);
+    if (error) toast.error(error.message);
+    else { toast.success(`Request ${status}`); fetchWingo(); }
   };
 
   const fetchWithdrawals = async () => {
