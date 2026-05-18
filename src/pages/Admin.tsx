@@ -342,6 +342,7 @@ const Admin = () => {
               <TabsTrigger value="users" className="gap-2"><Users className="w-4 h-4" />Users</TabsTrigger>
               <TabsTrigger value="courses" className="gap-2"><BookOpen className="w-4 h-4" />Courses</TabsTrigger>
               <TabsTrigger value="referrals" className="gap-2"><Gift className="w-4 h-4" />Referrals</TabsTrigger>
+              <TabsTrigger value="wingo" className="gap-2"><Dices className="w-4 h-4" />Wingo</TabsTrigger>
             </TabsList>
 
             {/* ORDERS */}
