@@ -61,6 +61,7 @@ const Admin = () => {
   const [profiles, setProfiles] = useState<ProfileRow[]>([]);
   const [courses, setCourses] = useState<CourseRow[]>([]);
   const [referrals, setReferrals] = useState<ReferralRow[]>([]);
+  const [wingoReqs, setWingoReqs] = useState<any[]>([]);
 
   const [updating, setUpdating] = useState<string | null>(null);
   const [updatingOrder, setUpdatingOrder] = useState<string | null>(null);
