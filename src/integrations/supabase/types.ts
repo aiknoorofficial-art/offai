@@ -378,6 +378,48 @@ export type Database = {
         }
         Relationships: []
       }
+      wingo_access_requests: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          receiver_account: string
+          receiver_name: string
+          sender_account: string
+          sender_name: string
+          status: string
+          tx_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          receiver_account: string
+          receiver_name: string
+          sender_account: string
+          sender_name: string
+          status?: string
+          tx_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          receiver_account?: string
+          receiver_name?: string
+          sender_account?: string
+          sender_name?: string
+          status?: string
+          tx_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       withdrawals: {
         Row: {
           account_name: string
