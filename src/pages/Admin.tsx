@@ -561,6 +561,63 @@ const Admin = () => {
                 })}
               </div>
             </TabsContent>
+
+            {/* WINGO ACCESS REQUESTS */}
+            <TabsContent value="wingo" className="space-y-4">
+              <SectionTitle icon={Dices} text={`Pending Wingo Requests (${wingoReqs.filter(r => r.status === "pending").length})`} />
+              <div className="space-y-2">
+                {wingoReqs.filter(r => r.status === "pending").length === 0 ? <EmptyState text="No pending Wingo requests" /> : null}
+                {wingoReqs.filter(r => r.status === "pending").map((r) => (
+                  <Card key={r.id} className="border-neon-magenta/30">
+                    <CardContent className="p-4 space-y-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <p className="font-semibold">{r.full_name}</p>
+                          <p className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleString()}</p>
+                        </div>
+                        <Badge variant="outline" className={statusConfig.pending.color}>
+                          <Clock className="w-3 h-3 mr-1" />Pending
+                        </Badge>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm bg-muted/30 rounded-md p-3">
+                        <div><span className="text-xs text-muted-foreground">TX ID</span><p className="font-mono truncate">{r.tx_id}</p></div>
+                        <div><span className="text-xs text-muted-foreground">Amount</span><p className="font-semibold text-neon-magenta">Rs. {r.amount}</p></div>
+                        <div><span className="text-xs text-muted-foreground">Method</span><p>Easypaisa</p></div>
+                        <div><span className="text-xs text-muted-foreground">Sender</span><p className="truncate">{r.sender_name}</p></div>
+                        <div><span className="text-xs text-muted-foreground">Sender Acc</span><p className="font-mono truncate">{r.sender_account}</p></div>
+                        <div><span className="text-xs text-muted-foreground">Receiver</span><p className="truncate">{r.receiver_name}</p></div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button size="sm" onClick={() => updateWingoStatus(r.id, "approved")} className="bg-green-600 hover:bg-green-700 text-white">
+                          <CheckCircle className="w-4 h-4 mr-1" />Approve
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => updateWingoStatus(r.id, "rejected")} className="border-red-500/50 text-red-400 hover:bg-red-500/10">
+                          <XCircle className="w-4 h-4 mr-1" />Reject
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              <SectionTitle icon={Dices} text={`History (${wingoReqs.filter(r => r.status !== "pending").length})`} />
+              <div className="space-y-2">
+                {wingoReqs.filter(r => r.status !== "pending").map((r) => {
+                  const cfg = statusConfig[r.status] || statusConfig.pending;
+                  return (
+                    <Card key={r.id} className="border-border/50">
+                      <CardContent className="p-3 sm:p-4 flex items-center justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="font-semibold truncate">{r.full_name} • Rs. {r.amount}</p>
+                          <p className="text-xs text-muted-foreground truncate">TX {r.tx_id} • {new Date(r.created_at).toLocaleDateString()}</p>
+                        </div>
+                        <Badge variant="outline" className={cfg.color}>{cfg.label}</Badge>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </TabsContent>
           </Tabs>
         </div>
       </main>
