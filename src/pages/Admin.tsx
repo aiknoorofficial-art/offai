@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import {
   Shield, Banknote, CheckCircle, XCircle, Package, Clock, MessageSquare,
   Users, BookOpen, Gift, TrendingUp, Trash2, UserPlus, UserMinus,
-  Search, Send, LayoutDashboard, Activity,
+  Search, Send, LayoutDashboard, Activity, Dices,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
