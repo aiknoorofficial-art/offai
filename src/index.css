@@ -230,4 +230,22 @@
     background-size: 200% 200%;
     animation: gradient-shift 5s ease infinite;
   }
+
+  .story-link {
+    @apply relative inline-block after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-primary after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left;
+  }
+
+  .hover-scale {
+    @apply transition-transform duration-200 hover:scale-105;
+  }
+
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_40px_-10px_hsl(var(--primary)/0.4)];
+  }
+
+  .bg-shimmer {
+    background: linear-gradient(90deg, transparent, hsl(var(--primary)/0.15), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 3s linear infinite;
+  }
 }
