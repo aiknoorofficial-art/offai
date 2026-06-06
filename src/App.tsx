@@ -16,6 +16,12 @@ import Orders from "./pages/Orders";
 import Admin from "./pages/Admin";
 import Referral from "./pages/Referral";
 import NotFound from "./pages/NotFound";
+import About from "./pages/About";
+import Blog from "./pages/Blog";
+import Careers from "./pages/Careers";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
+import Cookies from "./pages/Cookies";
 import { WhatsNewModal } from "./components/WhatsNewModal";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import WhatsAppButton from "./components/WhatsAppButton";
@@ -43,6 +49,12 @@ const App = () => (
           <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
           <Route path="/referral" element={<ProtectedRoute><Referral /></ProtectedRoute>} />
+          <Route path="/about" element={<About />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/careers" element={<Careers />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/cookies" element={<Cookies />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
