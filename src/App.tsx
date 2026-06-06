@@ -32,7 +32,7 @@ const App = () => (
         <WhatsAppButton />
         <Routes>
           <Route path="/auth" element={<Auth />} />
-          <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+          <Route path="/" element={<Index />} />
           <Route path="/generate" element={<ProtectedRoute><Generate /></ProtectedRoute>} />
           <Route path="/video" element={<ProtectedRoute><Video /></ProtectedRoute>} />
           <Route path="/thumbnail" element={<ProtectedRoute><Thumbnail /></ProtectedRoute>} />
