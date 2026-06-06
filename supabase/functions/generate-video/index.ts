@@ -61,10 +61,7 @@ serve(async (req) => {
       );
     }
 
-    const runwayRatio =
-      aspectRatio === "9:16" ? "720:1280" :
-      aspectRatio === "1:1"  ? "960:960"  :
-                               "1280:720";
+    const runwayRatio = aspectRatio === "9:16" ? "768:1280" : "1280:768";
 
     console.log("[generate-video] user:", userId, "prompt:", prompt.substring(0, 80));
 
