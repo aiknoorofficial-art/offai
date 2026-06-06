@@ -42,11 +42,13 @@ export const Footer = () => {
 
           {/* Mini links */}
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mb-5 text-xs animate-fade-in-up" style={{ animationDelay: "200ms" }}>
+            <Link to="/about" className="text-muted-foreground hover:text-primary transition-colors">About</Link>
+            <Link to="/blog" className="text-muted-foreground hover:text-primary transition-colors">Blog</Link>
+            <Link to="/careers" className="text-muted-foreground hover:text-primary transition-colors">Careers</Link>
             <Link to="/changelog" className="text-muted-foreground hover:text-primary transition-colors story-link">What's New</Link>
-            <Link to="/courses" className="text-muted-foreground hover:text-primary transition-colors">Courses</Link>
-            <Link to="/referral" className="text-muted-foreground hover:text-primary transition-colors">Referral</Link>
-            <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Privacy</a>
-            <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Terms</a>
+            <Link to="/privacy" className="text-muted-foreground hover:text-primary transition-colors">Privacy</Link>
+            <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors">Terms</Link>
+            <Link to="/cookies" className="text-muted-foreground hover:text-primary transition-colors">Cookies</Link>
           </div>
 
           {/* Socials */}
@@ -111,19 +113,19 @@ export const Footer = () => {
             <div className="animate-fade-in-up" style={{ animationDelay: "200ms" }}>
               <h3 className="font-semibold text-foreground mb-4">Company</h3>
               <ul className="space-y-3">
-                <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors story-link">About Us</a></li>
+                <li><Link to="/about" className="text-sm text-muted-foreground hover:text-primary transition-colors story-link">About Us</Link></li>
                 <li><Link to="/changelog" className="text-sm text-muted-foreground hover:text-primary transition-colors story-link">Changelog</Link></li>
-                <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors story-link">Blog</a></li>
-                <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors story-link">Careers</a></li>
+                <li><Link to="/blog" className="text-sm text-muted-foreground hover:text-primary transition-colors story-link">Blog</Link></li>
+                <li><Link to="/careers" className="text-sm text-muted-foreground hover:text-primary transition-colors story-link">Careers</Link></li>
               </ul>
             </div>
 
             <div className="animate-fade-in-up" style={{ animationDelay: "300ms" }}>
               <h3 className="font-semibold text-foreground mb-4">Legal</h3>
               <ul className="space-y-3">
-                <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors story-link">Privacy Policy</a></li>
-                <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors story-link">Terms of Service</a></li>
-                <li><a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors story-link">Cookie Policy</a></li>
+                <li><Link to="/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors story-link">Privacy Policy</Link></li>
+                <li><Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors story-link">Terms of Service</Link></li>
+                <li><Link to="/cookies" className="text-sm text-muted-foreground hover:text-primary transition-colors story-link">Cookie Policy</Link></li>
               </ul>
             </div>
           </div>
