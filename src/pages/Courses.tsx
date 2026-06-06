@@ -366,8 +366,12 @@ const Courses = () => {
     try {
       // Delete files from storage
       if (course.file_url && user) {
-        const filePath = course.file_url.split("/courses/")[1];
+        // New uploads store the bare path; legacy ones may be public URLs
+        const filePath = course.file_url.includes("/courses/")
+          ? course.file_url.split("/courses/")[1]
+          : course.file_url;
         if (filePath) {
+          await supabase.storage.from("course-files").remove([filePath]);
           await supabase.storage.from("courses").remove([filePath]);
         }
       }
