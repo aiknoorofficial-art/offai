@@ -272,22 +272,18 @@ const Courses = () => {
     let imageUrl = null;
 
     try {
-      // Upload course file if selected
+      // Upload course file to PRIVATE bucket and store the path (not a public URL)
       if (file && user) {
         const fileExt = file.name.split(".").pop();
         const filePath = `${user.id}/${Date.now()}-file.${fileExt}`;
-        
+
         const { error: uploadError } = await supabase.storage
-          .from("courses")
+          .from("course-files")
           .upload(filePath, file);
 
         if (uploadError) throw uploadError;
 
-        const { data: urlData } = supabase.storage
-          .from("courses")
-          .getPublicUrl(filePath);
-
-        fileUrl = urlData.publicUrl;
+        fileUrl = filePath; // store storage path; signed URL is generated on download
         fileName = file.name;
       }
 
