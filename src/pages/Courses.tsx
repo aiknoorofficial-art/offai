@@ -272,22 +272,18 @@ const Courses = () => {
     let imageUrl = null;
 
     try {
-      // Upload course file if selected
+      // Upload course file to PRIVATE bucket and store the path (not a public URL)
       if (file && user) {
         const fileExt = file.name.split(".").pop();
         const filePath = `${user.id}/${Date.now()}-file.${fileExt}`;
-        
+
         const { error: uploadError } = await supabase.storage
-          .from("courses")
+          .from("course-files")
           .upload(filePath, file);
 
         if (uploadError) throw uploadError;
 
-        const { data: urlData } = supabase.storage
-          .from("courses")
-          .getPublicUrl(filePath);
-
-        fileUrl = urlData.publicUrl;
+        fileUrl = filePath; // store storage path; signed URL is generated on download
         fileName = file.name;
       }
 
@@ -370,8 +366,12 @@ const Courses = () => {
     try {
       // Delete files from storage
       if (course.file_url && user) {
-        const filePath = course.file_url.split("/courses/")[1];
+        // New uploads store the bare path; legacy ones may be public URLs
+        const filePath = course.file_url.includes("/courses/")
+          ? course.file_url.split("/courses/")[1]
+          : course.file_url;
         if (filePath) {
+          await supabase.storage.from("course-files").remove([filePath]);
           await supabase.storage.from("courses").remove([filePath]);
         }
       }
@@ -1017,15 +1017,29 @@ const Courses = () => {
                     <div>
                       <h4 className="font-semibold text-foreground mb-3 text-lg">Course Material</h4>
                       {isOwner || buyerOrderStatus === "accepted" ? (
-                        <a
-                          href={selectedCourse.file_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            const raw = selectedCourse.file_url!;
+                            // Legacy public URLs: open directly
+                            if (raw.startsWith("http")) {
+                              window.open(raw, "_blank", "noopener,noreferrer");
+                              return;
+                            }
+                            const { data, error } = await supabase.storage
+                              .from("course-files")
+                              .createSignedUrl(raw, 60 * 10);
+                            if (error || !data?.signedUrl) {
+                              toast.error("Unable to generate download link");
+                              return;
+                            }
+                            window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+                          }}
                           className="inline-flex items-center gap-3 px-6 py-3 rounded-lg bg-neon-purple/20 text-neon-purple hover:bg-neon-purple/30 transition-colors text-lg font-medium"
                         >
                           <Upload className="w-5 h-5" />
                           {selectedCourse.file_name || "Download File"}
-                        </a>
+                        </button>
                       ) : (
                         <div className="p-4 rounded-lg bg-muted/50 border border-border text-center">
                           <Package className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
