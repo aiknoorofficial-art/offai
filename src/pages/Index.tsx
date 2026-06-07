@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "@/hooks/use-toast";
 import AdSense from "@/components/AdSense";
 import aiShowcase from "@/assets/ai-showcase.jpg";
+import heroVideo from "@/assets/hero-video.mp4.asset.json";
 
 const Index = () => {
   const [user, setUser] = useState<User | null>(null);
