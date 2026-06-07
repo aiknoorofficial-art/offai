@@ -28,6 +28,12 @@ const Index = () => {
   const [withdrawName, setWithdrawName] = useState("");
   const [withdrawLoading, setWithdrawLoading] = useState(false);
   const [totalWithdrawn, setTotalWithdrawn] = useState(0);
+  const [showHeroVideo, setShowHeroVideo] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowHeroVideo(false), 10000);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
