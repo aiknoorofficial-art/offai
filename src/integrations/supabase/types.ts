@@ -461,6 +461,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_course_file_url: {
+        Args: { _course_id: string }
+        Returns: {
+          file_name: string
+          file_url: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
