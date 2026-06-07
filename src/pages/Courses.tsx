@@ -1013,14 +1013,20 @@ const Courses = () => {
                   </div>
 
                   {/* Course File - locked until order accepted */}
-                  {selectedCourse.file_url && (
+                  {selectedCourse.file_name && (
                     <div>
                       <h4 className="font-semibold text-foreground mb-3 text-lg">Course Material</h4>
                       {isOwner || buyerOrderStatus === "accepted" ? (
                         <button
                           type="button"
                           onClick={async () => {
-                            const raw = selectedCourse.file_url!;
+                            const { data: fileRows, error: rpcError } = await supabase
+                              .rpc("get_course_file_url", { _course_id: selectedCourse.id });
+                            const raw = fileRows?.[0]?.file_url;
+                            if (rpcError || !raw) {
+                              toast.error("Unable to access this file");
+                              return;
+                            }
                             // Legacy public URLs: open directly
                             if (raw.startsWith("http")) {
                               window.open(raw, "_blank", "noopener,noreferrer");
