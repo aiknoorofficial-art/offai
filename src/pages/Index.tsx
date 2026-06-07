@@ -480,6 +480,22 @@ const Index = () => {
         </div>
       </section>
 
+      <div className="container mx-auto px-4 py-12">
+        <AnimatedSection className="max-w-5xl mx-auto">
+          <div className="relative rounded-2xl overflow-hidden border border-neon-purple/30 shadow-[0_0_40px_hsl(280_100%_60%/0.25)]">
+            <img
+              src={aiShowcase}
+              alt="Neon AI workspace showcasing OFF AI's code, chat, and video tools"
+              width={1536}
+              height={768}
+              loading="lazy"
+              className="w-full h-auto object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent pointer-events-none" />
+          </div>
+        </AnimatedSection>
+      </div>
+
       <div className="container mx-auto px-4">
         <AdSense />
       </div>
