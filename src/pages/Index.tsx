@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import AdSense from "@/components/AdSense";
+import aiShowcase from "@/assets/ai-showcase.jpg";
 
 const Index = () => {
   const [user, setUser] = useState<User | null>(null);
