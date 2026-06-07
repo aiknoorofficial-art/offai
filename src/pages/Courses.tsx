@@ -364,15 +364,19 @@ const Courses = () => {
     if (!confirm("Are you sure you want to delete this course?")) return;
 
     try {
-      // Delete files from storage
-      if (course.file_url && user) {
-        // New uploads store the bare path; legacy ones may be public URLs
-        const filePath = course.file_url.includes("/courses/")
-          ? course.file_url.split("/courses/")[1]
-          : course.file_url;
-        if (filePath) {
-          await supabase.storage.from("course-files").remove([filePath]);
-          await supabase.storage.from("courses").remove([filePath]);
+      // Delete files from storage (owner-only path; fetch private file_url via RPC)
+      if (user) {
+        const { data: fileRows } = await supabase
+          .rpc("get_course_file_url", { _course_id: course.id });
+        const rawFileUrl = fileRows?.[0]?.file_url;
+        if (rawFileUrl) {
+          const filePath = rawFileUrl.includes("/courses/")
+            ? rawFileUrl.split("/courses/")[1]
+            : rawFileUrl;
+          if (filePath) {
+            await supabase.storage.from("course-files").remove([filePath]);
+            await supabase.storage.from("courses").remove([filePath]);
+          }
         }
       }
       if (course.image_url && user) {
@@ -1013,14 +1017,20 @@ const Courses = () => {
                   </div>
 
                   {/* Course File - locked until order accepted */}
-                  {selectedCourse.file_url && (
+                  {selectedCourse.file_name && (
                     <div>
                       <h4 className="font-semibold text-foreground mb-3 text-lg">Course Material</h4>
                       {isOwner || buyerOrderStatus === "accepted" ? (
                         <button
                           type="button"
                           onClick={async () => {
-                            const raw = selectedCourse.file_url!;
+                            const { data: fileRows, error: rpcError } = await supabase
+                              .rpc("get_course_file_url", { _course_id: selectedCourse.id });
+                            const raw = fileRows?.[0]?.file_url;
+                            if (rpcError || !raw) {
+                              toast.error("Unable to access this file");
+                              return;
+                            }
                             // Legacy public URLs: open directly
                             if (raw.startsWith("http")) {
                               window.open(raw, "_blank", "noopener,noreferrer");
