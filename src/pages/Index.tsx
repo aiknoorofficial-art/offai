@@ -182,6 +182,27 @@ const Index = () => {
               </Link>
             </div>
           </AnimatedSection>
+
+          {/* Hero Video Showcase */}
+          <AnimatedSection animation="fade-up" delay={200} className="mt-16 max-w-5xl mx-auto">
+            <div className="relative rounded-2xl overflow-hidden border border-neon-cyan/20 shadow-[0_0_60px_hsl(180_100%_50%/0.15)]">
+              <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent z-10 pointer-events-none" />
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full aspect-video object-cover"
+                poster={aiShowcase}
+              >
+                <source src={heroVideo.url} type="video/mp4" />
+              </video>
+              <div className="absolute bottom-4 left-4 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-background/60 backdrop-blur-sm border border-neon-cyan/30">
+                <div className="w-2 h-2 rounded-full bg-neon-green animate-pulse" />
+                <span className="text-xs text-neon-cyan font-medium">AI in Action</span>
+              </div>
+            </div>
+          </AnimatedSection>
         </div>
       </section>
 
