@@ -190,7 +190,13 @@ const Index = () => {
           </AnimatedSection>
 
           {/* Hero Video Showcase */}
-          <AnimatedSection animation="fade-up" delay={200} className="mt-16 max-w-5xl mx-auto">
+          <div
+            className={`mt-16 max-w-5xl mx-auto transition-all duration-1000 ease-in-out ${
+              showHeroVideo
+                ? "opacity-100 translate-y-0 scale-100 max-h-[800px]"
+                : "opacity-0 -translate-y-8 scale-95 max-h-0 pointer-events-none"
+            }`}
+          >
             <div className="relative rounded-2xl overflow-hidden border border-neon-cyan/20 shadow-[0_0_60px_hsl(180_100%_50%/0.15)]">
               <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent z-10 pointer-events-none" />
               <video
@@ -208,7 +214,7 @@ const Index = () => {
                 <span className="text-xs text-neon-cyan font-medium">AI in Action</span>
               </div>
             </div>
-          </AnimatedSection>
+          </div>
         </div>
       </section>
 
