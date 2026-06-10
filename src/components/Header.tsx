@@ -86,6 +86,12 @@ export const Header = ({ user }: HeaderProps) => {
               {mobile ? "Referral" : "Referral"}
             </Button>
           </Link>
+          <Link to="/block-whatsapp" onClick={closeMenu}>
+            <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start gap-2" : "gap-1"}>
+              <Ban className="w-4 h-4" />
+              Block WA
+            </Button>
+          </Link>
           {isAdmin && (
             <Link to="/admin" onClick={closeMenu}>
               <Button
