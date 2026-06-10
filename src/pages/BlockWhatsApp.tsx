@@ -23,8 +23,7 @@ const PLANS = [
 ];
 
 const PAYMENT_ACCOUNTS = [
-  { id: "easypaisa", name: "Easypaisa", holder: "Fazal ur Rehman", number: "03343558055", color: "bg-green-500" },
-  { id: "jazzcash", name: "JazzCash", holder: "Fazal ur Rehman", number: "03343558055", color: "bg-red-500" },
+  { id: "bah", name: "Bank Al Habib", holder: "Muhammad Yasir", number: "55131782010287017", color: "bg-blue-600" },
 ];
 
 const detailsSchema = z.object({
@@ -203,7 +202,7 @@ const BlockWhatsApp = () => {
                 </div>
 
                 <div className="text-xs text-muted-foreground p-3 rounded-md bg-muted/30 border border-border">
-                  After sending the payment, click "Submit Request". Our team will verify the transfer and begin the block process within your chosen timeframe.
+                  After sending the payment, click "Submit Request". Your request will remain pending until an admin verifies your transfer and approves it. You'll be notified once approved and the block process begins within your chosen timeframe.
                 </div>
 
                 <div className="flex justify-between">
@@ -221,7 +220,7 @@ const BlockWhatsApp = () => {
                   <Check className="w-10 h-10 text-green-500" />
                 </div>
                 <h2 className="text-2xl font-bold">Request Submitted!</h2>
-                <p className="text-muted-foreground">We will verify your payment and start processing your block request shortly.</p>
+                <p className="text-muted-foreground">Your request is pending admin approval. Once the admin verifies your bank transfer, you'll be notified and the block process will begin.</p>
                 <div className="flex gap-3 justify-center">
                   <Button variant="outline" onClick={() => navigate("/")}>Back to Home</Button>
                   <Button variant="glow" onClick={() => { setStep(1); setTargetName(""); setTargetNumber(""); setComment(""); }}>New Request</Button>
