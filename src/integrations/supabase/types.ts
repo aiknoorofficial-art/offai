@@ -378,6 +378,45 @@ export type Database = {
         }
         Relationships: []
       }
+      whatsapp_block_requests: {
+        Row: {
+          amount_pkr: number
+          comment: string | null
+          created_at: string
+          id: string
+          plan: string
+          status: string
+          target_name: string
+          target_number: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_pkr: number
+          comment?: string | null
+          created_at?: string
+          id?: string
+          plan: string
+          status?: string
+          target_name: string
+          target_number: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_pkr?: number
+          comment?: string | null
+          created_at?: string
+          id?: string
+          plan?: string
+          status?: string
+          target_name?: string
+          target_number?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       wingo_access_requests: {
         Row: {
           amount: number
