@@ -202,7 +202,7 @@ const BlockWhatsApp = () => {
                 </div>
 
                 <div className="text-xs text-muted-foreground p-3 rounded-md bg-muted/30 border border-border">
-                  After sending the payment, click "Submit Request". Our team will verify the transfer and begin the block process within your chosen timeframe.
+                  After sending the payment, click "Submit Request". Your request will remain pending until an admin verifies your transfer and approves it. You'll be notified once approved and the block process begins within your chosen timeframe.
                 </div>
 
                 <div className="flex justify-between">
