@@ -13,7 +13,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, ArrowRight, Ban, Check, Clock, Copy, ShieldOff, Smartphone } from "lucide-react";
+import { ArrowLeft, ArrowRight, Ban, Check, Clock, Copy, Landmark, ShieldOff } from "lucide-react";
 
 const PLANS = [
   { id: "15h", label: "Block within 15 hours", price: 3500, eta: "Fastest" },
