@@ -171,7 +171,7 @@ const BlockWhatsApp = () => {
 
             {step === 3 && (
               <div className="space-y-5">
-                <h2 className="text-2xl font-bold flex items-center gap-2"><Smartphone className="w-6 h-6 text-neon-orange" /> Transfer Payment</h2>
+                <h2 className="text-2xl font-bold flex items-center gap-2"><Landmark className="w-6 h-6 text-neon-orange" /> Transfer Payment</h2>
                 <div className="p-4 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-between">
                   <div>
                     <div className="text-sm text-muted-foreground">Amount to pay</div>
