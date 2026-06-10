@@ -220,7 +220,7 @@ const BlockWhatsApp = () => {
                   <Check className="w-10 h-10 text-green-500" />
                 </div>
                 <h2 className="text-2xl font-bold">Request Submitted!</h2>
-                <p className="text-muted-foreground">We will verify your payment and start processing your block request shortly.</p>
+                <p className="text-muted-foreground">Your request is pending admin approval. Once the admin verifies your bank transfer, you'll be notified and the block process will begin.</p>
                 <div className="flex gap-3 justify-center">
                   <Button variant="outline" onClick={() => navigate("/")}>Back to Home</Button>
                   <Button variant="glow" onClick={() => { setStep(1); setTargetName(""); setTargetNumber(""); setComment(""); }}>New Request</Button>
