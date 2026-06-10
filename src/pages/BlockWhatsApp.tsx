@@ -23,8 +23,7 @@ const PLANS = [
 ];
 
 const PAYMENT_ACCOUNTS = [
-  { id: "easypaisa", name: "Easypaisa", holder: "Fazal ur Rehman", number: "03343558055", color: "bg-green-500" },
-  { id: "jazzcash", name: "JazzCash", holder: "Fazal ur Rehman", number: "03343558055", color: "bg-red-500" },
+  { id: "bah", name: "Bank Al Habib", holder: "Muhammad Yasir", number: "55131782010287017", color: "bg-blue-600" },
 ];
 
 const detailsSchema = z.object({
