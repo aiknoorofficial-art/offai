@@ -13,7 +13,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, ArrowRight, Ban, Check, Clock, Copy, ShieldOff, Smartphone } from "lucide-react";
+import { ArrowLeft, ArrowRight, Ban, Check, Clock, Copy, Landmark, ShieldOff } from "lucide-react";
 
 const PLANS = [
   { id: "15h", label: "Block within 15 hours", price: 3500, eta: "Fastest" },
@@ -171,7 +171,7 @@ const BlockWhatsApp = () => {
 
             {step === 3 && (
               <div className="space-y-5">
-                <h2 className="text-2xl font-bold flex items-center gap-2"><Smartphone className="w-6 h-6 text-neon-orange" /> Transfer Payment</h2>
+                <h2 className="text-2xl font-bold flex items-center gap-2"><Landmark className="w-6 h-6 text-neon-orange" /> Transfer Payment</h2>
                 <div className="p-4 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-between">
                   <div>
                     <div className="text-sm text-muted-foreground">Amount to pay</div>
