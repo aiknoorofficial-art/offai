@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
-import { LogOut, Zap, User as UserIcon, Menu, X, Shield, Gift } from "lucide-react";
+import { LogOut, Zap, User as UserIcon, Menu, X, Shield, Gift, Ban } from "lucide-react";
 import { TransactionModal } from "./TransactionModal";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { NotificationBell } from "./NotificationBell";
