@@ -22,6 +22,7 @@ import Careers from "./pages/Careers";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Cookies from "./pages/Cookies";
+import BlockWhatsApp from "./pages/BlockWhatsApp";
 import { WhatsNewModal } from "./components/WhatsNewModal";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import WhatsAppButton from "./components/WhatsAppButton";
@@ -55,6 +56,7 @@ const App = () => (
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/cookies" element={<Cookies />} />
+          <Route path="/block-whatsapp" element={<ProtectedRoute><BlockWhatsApp /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
