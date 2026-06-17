@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Public can read dad bucket" ON storage.objects;
