@@ -158,7 +158,7 @@ serve(async (req) => {
         );
       }
       return new Response(
-        JSON.stringify({ error: "Failed to start video generation", details: errorText.slice(0, 300) }),
+        JSON.stringify({ error: "Failed to start video generation" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
