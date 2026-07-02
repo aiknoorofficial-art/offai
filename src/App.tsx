@@ -18,14 +18,13 @@ import Referral from "./pages/Referral";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
 import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import Careers from "./pages/Careers";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Cookies from "./pages/Cookies";
-import BlockWhatsApp from "./pages/BlockWhatsApp";
 import { WhatsNewModal } from "./components/WhatsNewModal";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import WhatsAppButton from "./components/WhatsAppButton";
 
 const queryClient = new QueryClient();
 
@@ -36,7 +35,6 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <WhatsNewModal />
-        <WhatsAppButton />
         <Routes>
           <Route path="/auth" element={<Auth />} />
           <Route path="/" element={<Index />} />
@@ -52,11 +50,11 @@ const App = () => (
           <Route path="/referral" element={<ProtectedRoute><Referral /></ProtectedRoute>} />
           <Route path="/about" element={<About />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/cookies" element={<Cookies />} />
-          <Route path="/block-whatsapp" element={<ProtectedRoute><BlockWhatsApp /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
