@@ -3,11 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
-import { LogOut, Zap, User as UserIcon, Menu, X, Shield, Gift, Ban } from "lucide-react";
+import { LogOut, Zap, User as UserIcon, Menu, X, Shield, Gift } from "lucide-react";
 import { TransactionModal } from "./TransactionModal";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { NotificationBell } from "./NotificationBell";
-import { WingoPredictor } from "./WingoPredictor";
+
 
 interface HeaderProps {
   user: User | null;
@@ -41,8 +41,8 @@ export const Header = ({ user }: HeaderProps) => {
 
   const NavLinks = ({ mobile = false }: { mobile?: boolean }) => (
     <>
-      <WingoPredictor />
       <TransactionModal />
+
       <Link to="/changelog" onClick={closeMenu}>
         <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start" : ""}>
           What's New
@@ -84,12 +84,6 @@ export const Header = ({ user }: HeaderProps) => {
             <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start gap-2" : "gap-1"}>
               <Gift className="w-4 h-4" />
               {mobile ? "Referral" : "Referral"}
-            </Button>
-          </Link>
-          <Link to="/block-whatsapp" onClick={closeMenu}>
-            <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start gap-2" : "gap-1"}>
-              <Ban className="w-4 h-4" />
-              Block WA
             </Button>
           </Link>
           {isAdmin && (
