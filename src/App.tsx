@@ -12,7 +12,7 @@ import Chat from "./pages/Chat";
 import Changelog from "./pages/Changelog";
 import Profile from "./pages/Profile";
 import Courses from "./pages/Courses";
-import Orders from "./pages/Orders";
+
 import Admin from "./pages/Admin";
 import Referral from "./pages/Referral";
 import NotFound from "./pages/NotFound";
@@ -45,7 +45,7 @@ const App = () => (
           <Route path="/changelog" element={<ProtectedRoute><Changelog /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
-          <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+          
           <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
           <Route path="/referral" element={<ProtectedRoute><Referral /></ProtectedRoute>} />
           <Route path="/about" element={<About />} />

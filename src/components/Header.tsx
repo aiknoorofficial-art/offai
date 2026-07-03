@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { LogOut, Zap, User as UserIcon, Menu, X, Shield, Gift } from "lucide-react";
-import { TransactionModal } from "./TransactionModal";
+
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { NotificationBell } from "./NotificationBell";
 
@@ -41,13 +41,12 @@ export const Header = ({ user }: HeaderProps) => {
 
   const NavLinks = ({ mobile = false }: { mobile?: boolean }) => (
     <>
-      <TransactionModal />
-
       <Link to="/changelog" onClick={closeMenu}>
         <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start" : ""}>
           What's New
         </Button>
       </Link>
+
       {user ? (
         <>
           <Link to="/chat" onClick={closeMenu}>
@@ -73,11 +72,6 @@ export const Header = ({ user }: HeaderProps) => {
           <Link to="/courses" onClick={closeMenu}>
             <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start" : ""}>
               Courses
-            </Button>
-          </Link>
-          <Link to="/orders" onClick={closeMenu}>
-            <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start" : ""}>
-              Orders
             </Button>
           </Link>
           <Link to="/referral" onClick={closeMenu}>
