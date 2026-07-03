@@ -41,13 +41,12 @@ export const Header = ({ user }: HeaderProps) => {
 
   const NavLinks = ({ mobile = false }: { mobile?: boolean }) => (
     <>
-      <TransactionModal />
-
       <Link to="/changelog" onClick={closeMenu}>
         <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start" : ""}>
           What's New
         </Button>
       </Link>
+
       {user ? (
         <>
           <Link to="/chat" onClick={closeMenu}>
