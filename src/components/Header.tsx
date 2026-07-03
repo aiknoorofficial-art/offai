@@ -74,8 +74,6 @@ export const Header = ({ user }: HeaderProps) => {
               Courses
             </Button>
           </Link>
-
-          </Link>
           <Link to="/referral" onClick={closeMenu}>
             <Button variant="ghost" size={mobile ? "default" : "sm"} className={mobile ? "w-full justify-start gap-2" : "gap-1"}>
               <Gift className="w-4 h-4" />
