@@ -38,9 +38,14 @@ serve(async (req) => {
     const userId = claimsData.claims.sub;
     const { prompt, duration = 5, aspectRatio = "16:9" } = await req.json();
 
-    if (!prompt || typeof prompt !== "string" || prompt.trim().length < 3) {
+    if (
+      !prompt ||
+      typeof prompt !== "string" ||
+      prompt.trim().length < 3 ||
+      prompt.trim().length > 2000
+    ) {
       return new Response(
-        JSON.stringify({ error: "Please provide a valid prompt (at least 3 characters)" }),
+        JSON.stringify({ error: "Prompt must be between 3 and 2000 characters." }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
