@@ -12,7 +12,7 @@ import Chat from "./pages/Chat";
 import Changelog from "./pages/Changelog";
 import Profile from "./pages/Profile";
 import Courses from "./pages/Courses";
-import Orders from "./pages/Orders";
+
 import Admin from "./pages/Admin";
 import Referral from "./pages/Referral";
 import NotFound from "./pages/NotFound";
