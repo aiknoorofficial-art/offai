@@ -342,12 +342,12 @@ const Index = () => {
           </AnimatedSection>
 
           <div className="space-y-3 sm:space-y-4">
-            {[
+            {([
               { icon: <Cpu className="w-5 h-5" />, color: "cyan", t: "State-of-the-art AI models", d: "Gemini 2.5 Flash for chat & code, Runway Gen-3 for video — always the latest." },
               { icon: <Rocket className="w-5 h-5" />, color: "magenta", t: "Lightning fast", d: "Streaming responses, no queues, generate results in seconds." },
               { icon: <Wallet className="w-5 h-5" />, color: "green", t: "Get paid, your way", d: "Easypaisa, JazzCash, NayaPay, SadaPay, Bank Transfer or USDT TRC20." },
               { icon: <Shield className="w-5 h-5" />, color: "yellow", t: "Private & secure", d: "Row-level security. Your data belongs to you — never shared, never sold." },
-            ].map((f, i) => (
+            ] as const).map((f, i) => (
               <AnimatedSection key={f.t} animation="fade-up" delay={i * 80}>
                 <RowFeature {...f} />
               </AnimatedSection>
