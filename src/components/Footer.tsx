@@ -15,9 +15,9 @@ export const Footer = () => {
           <div className="flex flex-col items-center text-center mb-6 animate-fade-in-up">
             <Link to="/" className="flex items-center gap-2 mb-3">
               <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center shadow-[0_0_20px_hsl(var(--primary)/0.5)] animate-pulse-glow">
-                <Zap className="w-6 h-6 text-primary-foreground" />
+                <span className="text-lg font-black text-primary-foreground tracking-tighter">FT</span>
               </div>
-              <span className="text-xl font-bold gradient-text-multi animate-gradient">OFF AI</span>
+              <span className="text-xl font-bold gradient-text-multi animate-gradient">OFFTOOL</span>
             </Link>
             <p className="text-xs text-muted-foreground max-w-xs">
               AI-powered tools for developers and creators.
@@ -73,7 +73,7 @@ export const Footer = () => {
             <p className="flex items-center gap-1">
               Made with <Heart className="w-3 h-3 text-destructive animate-pulse fill-destructive" /> for creators
             </p>
-            <p>© 2026 OFF AI · All rights reserved</p>
+            <p>© 2026 OFFTOOL · All rights reserved</p>
           </div>
         </div>
 
@@ -83,9 +83,9 @@ export const Footer = () => {
             <div className="md:col-span-1 animate-fade-in-up">
               <Link to="/" className="flex items-center gap-2 mb-4 group">
                 <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center shadow-[0_0_20px_hsl(var(--primary)/0.5)] group-hover:shadow-[0_0_30px_hsl(var(--primary)/0.8)] transition-all animate-pulse-glow">
-                  <Zap className="w-6 h-6 text-primary-foreground" />
+                  <span className="text-lg font-black text-primary-foreground tracking-tighter">FT</span>
                 </div>
-                <span className="text-xl font-bold gradient-text-multi animate-gradient">OFF AI</span>
+                <span className="text-xl font-bold gradient-text-multi animate-gradient">OFFTOOL</span>
               </Link>
               <p className="text-sm text-muted-foreground mb-4">
                 AI-powered tools for developers and creators. Generate code, videos, and more.
@@ -131,7 +131,7 @@ export const Footer = () => {
           </div>
 
           <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-muted-foreground">© 2026 OFF AI. All rights reserved.</p>
+            <p className="text-sm text-muted-foreground">© 2026 OFFTOOL. All rights reserved.</p>
             <p className="text-sm text-muted-foreground flex items-center gap-1">
               Made with <Heart className="w-4 h-4 text-destructive animate-pulse fill-destructive" /> for developers
             </p>

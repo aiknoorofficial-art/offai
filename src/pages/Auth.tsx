@@ -215,7 +215,7 @@ const Auth = () => {
                 {isSignUp ? "Create Account" : "Welcome Back"}
               </h1>
               <p className="text-muted-foreground mt-2">
-                {isSignUp ? "Join OFF AI and start generating code" : "Sign in to continue coding"}
+                {isSignUp ? "Join OFFTOOL and start generating code" : "Sign in to continue coding"}
               </p>
             </div>
 

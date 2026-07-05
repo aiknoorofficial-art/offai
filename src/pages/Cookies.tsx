@@ -11,7 +11,7 @@ const TYPES = [
 const Cookies = () => (
   <StaticPage title="Cookie Policy" subtitle="Last updated: June 6, 2026">
     <p>
-      OFF AI uses cookies and similar technologies to keep you signed in, remember your preferences, and
+      OFFTOOL uses cookies and similar technologies to keep you signed in, remember your preferences, and
       understand how the product is used.
     </p>
 

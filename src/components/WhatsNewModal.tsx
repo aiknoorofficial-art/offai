@@ -135,7 +135,7 @@ export const WhatsNewModal = () => {
         <DialogHeader>
           <div className="flex items-center gap-2">
             <DialogTitle className="text-xl gradient-text-multi">
-              What's New in OFF AI
+              What's New in OFFTOOL
             </DialogTitle>
             <Badge variant="outline" className="border-neon-cyan text-neon-cyan">
               v{latestUpdate.version}

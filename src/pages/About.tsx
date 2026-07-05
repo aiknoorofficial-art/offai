@@ -20,7 +20,7 @@ const About = () => (
       <Target className="w-6 h-6 text-neon-cyan" /> Our Mission
     </h2>
     <p>
-      At OFF AI, we believe powerful AI tools should be accessible to everyone. Our mission is to give
+      At OFFTOOL, we believe powerful AI tools should be accessible to everyone. Our mission is to give
       developers, creators, and entrepreneurs an all-in-one suite to ship ideas faster — from generating
       code and videos to crafting thumbnails and chatting with cutting-edge AI models.
     </p>
@@ -29,7 +29,7 @@ const About = () => (
       <Heart className="w-6 h-6 text-neon-magenta" /> Our Story
     </h2>
     <p>
-      OFF AI started with a simple idea: stop juggling a dozen subscriptions. We've combined the best AI
+      OFFTOOL started with a simple idea: stop juggling a dozen subscriptions. We've combined the best AI
       models behind one elegant interface, so you can focus on building instead of integrating.
     </p>
 

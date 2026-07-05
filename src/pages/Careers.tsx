@@ -23,7 +23,7 @@ const Careers = () => (
       taking ownership, and working with kind people — you'll fit right in.
     </p>
 
-    <h2 className="text-2xl font-bold text-foreground mt-10 mb-4">Why OFF AI</h2>
+    <h2 className="text-2xl font-bold text-foreground mt-10 mb-4">Why OFFTOOL</h2>
     <div className="not-prose grid sm:grid-cols-2 gap-4 mb-8">
       {PERKS.map(({ Icon, title, desc }, i) => (
         <div key={i} className="p-4 rounded-xl border border-border bg-card/50 backdrop-blur">
