@@ -131,7 +131,7 @@ export const Header = ({ user }: HeaderProps) => {
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
           <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center shadow-[0_0_20px_hsl(var(--primary)/0.5)] group-hover:shadow-[0_0_30px_hsl(var(--primary)/0.7)] transition-all duration-300">
-            <Zap className="w-6 h-6 text-primary-foreground" />
+            <span className="text-lg font-black text-primary-foreground tracking-tighter">FT</span>
           </div>
           <span className="text-xl font-bold text-foreground text-glow">OFFTOOL</span>
         </Link>
