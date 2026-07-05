@@ -3,7 +3,7 @@ import { StaticPage } from "@/components/StaticPage";
 const Terms = () => (
   <StaticPage title="Terms of Service" subtitle="Last updated: June 6, 2026">
     <p>
-      By accessing or using OFF AI, you agree to these Terms. Please read them carefully.
+      By accessing or using OFFTOOL, you agree to these Terms. Please read them carefully.
     </p>
 
     <h2 className="text-xl font-bold text-foreground mt-8 mb-2">1. Accounts</h2>
@@ -23,7 +23,7 @@ const Terms = () => (
 
     <h2 className="text-xl font-bold text-foreground mt-8 mb-2">3. Content Ownership</h2>
     <p>
-      You own the content you create using OFF AI, subject to the licenses of the underlying AI models.
+      You own the content you create using OFFTOOL, subject to the licenses of the underlying AI models.
       You grant us a limited license to host and display your content as needed to operate the service.
     </p>
 
@@ -41,7 +41,7 @@ const Terms = () => (
 
     <h2 className="text-xl font-bold text-foreground mt-8 mb-2">6. Disclaimer</h2>
     <p>
-      OFF AI is provided "as is". AI-generated content may be inaccurate — always review before
+      OFFTOOL is provided "as is". AI-generated content may be inaccurate — always review before
       using in production. We are not liable for indirect or consequential damages.
     </p>
 

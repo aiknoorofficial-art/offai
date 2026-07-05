@@ -30,7 +30,7 @@ const Changelog = () => {
             Changelog
           </h1>
           <p className="text-muted-foreground mb-8">
-            See what's new in OFF AI
+            See what's new in OFFTOOL
           </p>
 
           <div className="space-y-8">

@@ -3,7 +3,7 @@ import { StaticPage } from "@/components/StaticPage";
 const Privacy = () => (
   <StaticPage title="Privacy Policy" subtitle="Last updated: June 6, 2026">
     <p>
-      Your privacy matters to us. This policy describes what information OFF AI collects, how we use it,
+      Your privacy matters to us. This policy describes what information OFFTOOL collects, how we use it,
       and the choices you have.
     </p>
 
@@ -22,7 +22,7 @@ const Privacy = () => (
 
     <h2 className="text-xl font-bold text-foreground mt-8 mb-2">2. How We Use Information</h2>
     <ul className="list-disc pl-6 space-y-1">
-      <li>To provide, maintain, and improve the OFF AI services</li>
+      <li>To provide, maintain, and improve the OFFTOOL services</li>
       <li>To process transactions and manage course/referral payouts</li>
       <li>To send important account and product updates</li>
       <li>To prevent fraud and abuse</li>

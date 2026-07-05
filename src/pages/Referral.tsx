@@ -59,7 +59,7 @@ const Referral = () => {
 
   const shareLink = async () => {
     if (navigator.share) {
-      await navigator.share({ title: "Join OFF AI", text: "Sign up using my referral link and get started!", url: referralLink });
+      await navigator.share({ title: "Join OFFTOOL", text: "Sign up using my referral link and get started!", url: referralLink });
     } else {
       copyLink();
     }

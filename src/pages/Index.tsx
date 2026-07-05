@@ -334,7 +334,7 @@ const Index = () => {
       <section className="py-12 sm:py-20 px-4">
         <div className="container mx-auto max-w-4xl">
           <AnimatedSection className="text-center mb-8 sm:mb-14">
-            <span className="text-xs uppercase tracking-[0.2em] text-neon-purple font-semibold">Why OFF AI</span>
+            <span className="text-xs uppercase tracking-[0.2em] text-neon-purple font-semibold">Why OFFTOOL</span>
             <h2 className="text-2xl sm:text-4xl font-bold mt-2">
               <span className="text-foreground">Built for </span>
               <span className="text-neon-purple text-glow-purple">real creators</span>
@@ -377,7 +377,7 @@ const Index = () => {
               <span className="gradient-text-cyber animate-gradient">Ready to build with AI?</span>
             </h2>
             <p className="text-sm sm:text-lg text-muted-foreground mb-7">
-              Join thousands creating, teaching, and earning with OFF AI — start free today.
+              Join thousands creating, teaching, and earning with OFFTOOL — start free today.
             </p>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 max-w-sm sm:max-w-none mx-auto">
               <Link to={user ? "/generate" : "/auth?mode=signup"} className="w-full sm:w-auto">

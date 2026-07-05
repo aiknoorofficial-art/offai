@@ -133,7 +133,7 @@ export const Header = ({ user }: HeaderProps) => {
           <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center shadow-[0_0_20px_hsl(var(--primary)/0.5)] group-hover:shadow-[0_0_30px_hsl(var(--primary)/0.7)] transition-all duration-300">
             <Zap className="w-6 h-6 text-primary-foreground" />
           </div>
-          <span className="text-xl font-bold text-foreground text-glow">OFF AI</span>
+          <span className="text-xl font-bold text-foreground text-glow">OFFTOOL</span>
         </Link>
 
         {/* Desktop Navigation */}

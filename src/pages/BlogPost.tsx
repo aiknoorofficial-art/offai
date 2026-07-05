@@ -30,7 +30,7 @@ const BlogPost = () => {
 
   useEffect(() => {
     if (article) {
-      document.title = `${article.title} | OFF AI Blog`;
+      document.title = `${article.title} | OFFTOOL Blog`;
       const desc = document.querySelector('meta[name="description"]');
       if (desc) desc.setAttribute("content", article.description);
       let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;

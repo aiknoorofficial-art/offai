@@ -7,7 +7,7 @@ import { useEffect } from "react";
 
 const Blog = () => {
   useEffect(() => {
-    document.title = "Blog — AI tutorials, earning guides & tool reviews | OFF AI";
+    document.title = "Blog — AI tutorials, earning guides & tool reviews | OFFTOOL";
     const desc = document.querySelector('meta[name="description"]');
     if (desc) desc.setAttribute("content", "In-depth articles on AI video, prompt engineering, making money with AI, SEO, and building online courses. Long-form guides written for people doing the work.");
   }, []);
