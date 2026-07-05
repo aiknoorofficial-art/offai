@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { Zap, Github, Twitter, Mail, Heart, Code2, Video, MessageSquare, Sparkles } from "lucide-react";
+import { Github, Twitter, Mail, Heart, Code2, Video, MessageSquare, Sparkles } from "lucide-react";
+import { Logo } from "./Logo";
 
 export const Footer = () => {
   return (
@@ -14,8 +15,8 @@ export const Footer = () => {
           {/* Brand */}
           <div className="flex flex-col items-center text-center mb-6 animate-fade-in-up">
             <Link to="/" className="flex items-center gap-2 mb-3">
-              <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center shadow-[0_0_20px_hsl(var(--primary)/0.5)] animate-pulse-glow">
-                <span className="text-lg font-black text-primary-foreground tracking-tighter">FT</span>
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center shadow-[0_0_20px_hsl(var(--logo-bg)/0.5)] animate-pulse-glow">
+                <Logo className="w-full h-full" />
               </div>
               <span className="text-xl font-bold gradient-text-multi animate-gradient">OFFTOOL</span>
             </Link>
@@ -82,8 +83,8 @@ export const Footer = () => {
           <div className="grid grid-cols-4 gap-8 mb-8">
             <div className="md:col-span-1 animate-fade-in-up">
               <Link to="/" className="flex items-center gap-2 mb-4 group">
-                <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center shadow-[0_0_20px_hsl(var(--primary)/0.5)] group-hover:shadow-[0_0_30px_hsl(var(--primary)/0.8)] transition-all animate-pulse-glow">
-                  <span className="text-lg font-black text-primary-foreground tracking-tighter">FT</span>
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center shadow-[0_0_20px_hsl(var(--logo-bg)/0.5)] group-hover:shadow-[0_0_30px_hsl(var(--logo-bg)/0.8)] transition-all animate-pulse-glow">
+                  <Logo className="w-full h-full" />
                 </div>
                 <span className="text-xl font-bold gradient-text-multi animate-gradient">OFFTOOL</span>
               </Link>
