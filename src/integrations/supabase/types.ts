@@ -14,6 +14,119 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_logs: {
+        Row: {
+          action: string
+          admin_id: string
+          created_at: string
+          details: Json
+          entity_id: string | null
+          entity_type: string
+          id: string
+        }
+        Insert: {
+          action: string
+          admin_id: string
+          created_at?: string
+          details?: Json
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+        }
+        Update: {
+          action?: string
+          admin_id?: string
+          created_at?: string
+          details?: Json
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      campaign_platforms: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          key: string
+          name: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          key: string
+          name: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          key?: string
+          name?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      campaigns: {
+        Row: {
+          badge_id: string | null
+          created_at: string
+          daily_progress: number
+          daily_status: string
+          description: string | null
+          end_date: string
+          id: string
+          platform_keys: string[]
+          start_date: string
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          badge_id?: string | null
+          created_at?: string
+          daily_progress?: number
+          daily_status?: string
+          description?: string | null
+          end_date?: string
+          id?: string
+          platform_keys?: string[]
+          start_date?: string
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          badge_id?: string | null
+          created_at?: string
+          daily_progress?: number
+          daily_status?: string
+          description?: string | null
+          end_date?: string
+          id?: string
+          platform_keys?: string[]
+          start_date?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaigns_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "daily_badges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_conversations: {
         Row: {
           created_at: string
@@ -255,6 +368,152 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      daily_badges: {
+        Row: {
+          created_at: string
+          daily_requirement: string
+          daily_target: number
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          daily_requirement: string
+          daily_target?: number
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          daily_requirement?: string
+          daily_target?: number
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      deposit_methods: {
+        Row: {
+          account_holder: string | null
+          account_label: string
+          account_value: string
+          currency: string
+          id: string
+          instructions: string | null
+          is_active: boolean
+          key: string
+          min_amount: number
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          account_holder?: string | null
+          account_label: string
+          account_value: string
+          currency?: string
+          id?: string
+          instructions?: string | null
+          is_active?: boolean
+          key: string
+          min_amount?: number
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          account_holder?: string | null
+          account_label?: string
+          account_value?: string
+          currency?: string
+          id?: string
+          instructions?: string | null
+          is_active?: boolean
+          key?: string
+          min_amount?: number
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      deposits: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          id: string
+          method_id: string
+          method_key: string
+          method_name: string
+          proof_path: string | null
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          sender_account: string | null
+          sender_name: string | null
+          status: string
+          transaction_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          id?: string
+          method_id: string
+          method_key: string
+          method_name: string
+          proof_path?: string | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          sender_account?: string | null
+          sender_name?: string | null
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          method_id?: string
+          method_key?: string
+          method_name?: string
+          proof_path?: string | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          sender_account?: string | null
+          sender_name?: string | null
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deposits_method_id_fkey"
+            columns: ["method_id"]
+            isOneToOne: false
+            referencedRelation: "deposit_methods"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notifications: {
         Row: {
